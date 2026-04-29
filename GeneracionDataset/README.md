@@ -35,7 +35,7 @@ A cada enlace del grafo se le asignan métricas fundamentales de Calidad de Serv
 
 ---
 
-### 🧠 Interpretación del Modelo
+### Interpretación del Modelo
 
 Este diseño introduce relaciones realistas entre métricas:
 
