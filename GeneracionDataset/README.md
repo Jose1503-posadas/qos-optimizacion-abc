@@ -1,8 +1,8 @@
-## 📊 Generación de Datos de la Red
+##  Generación de Datos de la Red
 
 Para evaluar el algoritmo de optimización de QoS, se genera una red sintética que simula condiciones realistas de telecomunicaciones. Esta red se modela como un grafo dirigido donde cada enlace contiene métricas clave de calidad de servicio.
 
-### 🔧 Modelo de Red
+###  Modelo de Red
 
 La topología de la red se construye utilizando el modelo de Barabási-Albert, el cual genera redes de libre escala. Este tipo de redes es adecuado para representar infraestructuras reales como Internet, donde algunos nodos tienen muchas conexiones (hubs).
 
@@ -13,7 +13,7 @@ Posteriormente, la red se convierte en dirigida, lo cual permite modelar flujos 
 
 ---
 
-### 📡 Asignación de Métricas QoS
+### Asignación de Métricas QoS
 
 A cada enlace del grafo se le asignan métricas fundamentales de Calidad de Servicio (QoS), simulando condiciones realistas:
 
