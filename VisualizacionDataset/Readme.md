@@ -138,3 +138,9 @@ La visualización final permite observar:
 - **La estructura topológica** antes de ejecutar el algoritmo de optimización.
 
 Esto permite validar visualmente que la red fue construida correctamente a partir del dataset normalizado antes de aplicar el algoritmo de Colonia de Abejas Artificiales (ABC).
+
+### Topología generada
+
+![Topología de red generada](topologia_red.png)
+
+*Figura 1. Representación gráfica de la red generada a partir del dataset normalizado.*
