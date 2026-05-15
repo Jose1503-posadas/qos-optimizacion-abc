@@ -2,7 +2,7 @@ import pandas as pd
 import networkx as nx
 import matplotlib.pyplot as plt
 
-# leer directamente desde el csv normalizado
+# leer desde el csv normalizado
 df = pd.read_csv("DatasetRed_Normalizado.csv")
 
 # crear grafo desde el archivo
