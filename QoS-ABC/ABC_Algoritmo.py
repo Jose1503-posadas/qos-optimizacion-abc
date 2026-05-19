@@ -505,3 +505,4 @@ class MultiObjectiveABC:
             )
 
         return self.pareto_front
+    
