@@ -170,7 +170,7 @@ Esto permite tratar todas las métricas bajo una misma lógica de minimización.
 Una vez completada la normalización, el nuevo conjunto de datos se almacena en un archivo CSV:
 
 ```python
-df_norm.to_csv("DatasetRed_Normalizado.csv", index=False)
+df_norm.to_csv("../Red_datasets/DatasetRed_Normalizado.csv",index=False)
 ```
 
 El archivo resultante contiene todas las métricas escaladas y preparadas para ser utilizadas en algoritmos de optimización y selección de rutas QoS.
