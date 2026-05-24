@@ -26,7 +26,7 @@ def generarRed(n=50, m=2):
         return G
 
 
-def exportar_Red_a_ArchivoCSV(G, filename="DatasetRed.csv"):
+def exportar_Red_a_ArchivoCSV(G, filename="../Red_datasets/DatasetRed.csv")):
     with open(filename, mode='w', newline='') as file:
         EscribeDoc = csv.writer(file)
         EscribeDoc.writerow(["Origen", "Destino", "AnchoBanda", "Latencia", "jitter", "PaquetesPerdidos"])
