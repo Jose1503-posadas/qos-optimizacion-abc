@@ -38,8 +38,6 @@ Además:
 
 Este archivo contiene los resultados obtenidos tras la ejecución del algoritmo de optimización multiobjetivo basado en Colonia de Abejas Artificiales (ABC).
 
----
-
 El archivo almacena la evolución del mejor valor encontrado en cada iteración del algoritmo, representado mediante:
 
 - `Iteracion`: número de iteración del algoritmo.
