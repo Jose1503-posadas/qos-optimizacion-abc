@@ -33,3 +33,16 @@ Además:
 - Todas las métricas mantienen una escala uniforme.
 
 ---
+
+## FitnessResultados.csv
+
+Este archivo contiene los resultados obtenidos tras la ejecución del algoritmo de optimización multiobjetivo basado en Colonia de Abejas Artificiales (ABC).
+
+---
+
+El archivo almacena la evolución del mejor valor encontrado en cada iteración del algoritmo, representado mediante:
+
+- `Iteracion`: número de iteración del algoritmo.
+- `MejorFitness`: mejor valor escalar obtenido a partir del frente de Pareto en cada iteración.
+
+---
