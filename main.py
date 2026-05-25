@@ -8,7 +8,7 @@ from QoS_ABC.ABC_Algoritmo import ABCMultiobjetivo
 BASE_DIR = Path(__file__).resolve().parent
 
 DATASET = BASE_DIR / "Red_datasets" / "DatasetRed_Normalizado.csv"
-PARETO = BASE_DIR / "Red_datasets" / "ParetoResultados.csv"
+PARETO = BASE_DIR / "Red_datasets" / "FitnessResultados.csv"
 
 
 def cargar_grafo(archivo_csv):
