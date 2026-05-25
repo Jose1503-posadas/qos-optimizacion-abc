@@ -157,4 +157,6 @@ El siguiente gráfico muestra cómo evoluciona el `MejorFitness` durante el proc
 
 ![Evolucion Fitness](MejorFitness.png)
 
+*Figura 2. Representación gráfica de la evolución del Fitness.*
+
 
