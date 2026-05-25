@@ -141,6 +141,20 @@ Esto permite validar visualmente que la red fue construida correctamente a parti
 
 ### Topología generada
 
-![Topología de red generada](topologia_red.png)
+![Topología de red generada](Red_dataset.png)
 
 *Figura 1. Representación gráfica de la red generada a partir del dataset normalizado.*
+
+--- 
+
+# Visualización Convergencia del algoritmo ABC
+
+La convergencia del algoritmo de Colonia de Abejas Artificiales (ABC) se analiza mediante la evolución del mejor valor de fitness global a lo largo de las iteraciones.
+
+El siguiente gráfico muestra cómo evoluciona el `MejorFitness` durante el proceso de optimización
+
+### Gráfico generado
+
+![Evolucion Fitness](MejorFitness.png)
+
+
