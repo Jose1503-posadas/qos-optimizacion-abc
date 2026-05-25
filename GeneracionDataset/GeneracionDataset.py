@@ -33,3 +33,10 @@ def exportar_Red_a_ArchivoCSV(G, filename="../Red_datasets/DatasetRed.csv"):
         for u, v, data in G.edges(data=True):
             EscribeDoc.writerow([u,v, data['AnchoBanda'], data['latencia'], data['jitter'], data['PaquetesPerdidos']])
 
+
+
+if __name__ == "__main__":
+    G = generarRed(n=100, m=4)
+    exportar_Red_a_ArchivoCSV(G)
+    print("Dataset generado correctamente.")
+
