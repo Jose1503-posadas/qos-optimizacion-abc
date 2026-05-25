@@ -41,12 +41,9 @@ Exploran soluciones vecinas mediante:
 - Insertar nodos
 - Eliminar nodos
 
----
-
 ### Abejas espectadoras
 Seleccionan soluciones prometedoras usando dominancia de Pareto.
 
----
 
 ### Abejas exploradoras
 Generan rutas aleatorias para evitar estancamiento.
@@ -88,17 +85,17 @@ La gráfica permite observar si el algoritmo converge o se estanca durante la op
 
 ## Flujo del algoritmo
 
-El proceso general del algoritmo es el siguiente:
+El procedimiento del algoritmo contiene las siguientes etapas:
 
-1. Inicialización de rutas aleatorias en la red
-2. Evaluación de métricas QoS
-3. Construcción del frente de Pareto
-4. Iteración del algoritmo:
-  4.1 Abejas obreras → exploración local
-  4.2 Abejas espectadoras → explotación de soluciones prometedoras
-  4.3 Abejas exploradoras → diversificación
-5. Actualización del frente de Pareto
-6. Retorno de soluciones óptimas
+1. Inicialización de soluciones aleatorias en el espacio de búsqueda.
+2. Evaluación de las métricas QoS para cada ruta.
+3. Construcción del frente de Pareto con soluciones no dominadas.
+4. Proceso iterativo de optimización:
+   - Abejas empleadas: exploración local del vecindario.
+   - Abejas espectadoras: explotación de soluciones de alta calidad.
+   - Abejas exploradoras: introducción de diversidad en la población.
+5. Actualización dinámica del frente de Pareto.
+6. Retorno del conjunto final de soluciones óptimas.
 
 ---
 
