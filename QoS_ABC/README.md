@@ -26,7 +26,7 @@ El sistema se modela como un grafo dirigido usando NetworkX:
 Cada solución se evalúa como un vector:
 
 \[
-Fitness = (Latencia,\ Pérdida,\ Jitter,\ Ancho\ de\ Banda)
+Fitness = (Latencia,\ Pérdida,\ Jitter,\ Ancho de Banda)
 \]
 
 ---
