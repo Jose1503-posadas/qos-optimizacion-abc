@@ -128,7 +128,114 @@ ProyectoQoSABC/
 │
 ```
 
-## Ejecución
+## Ejecución del proyecto
+
+El proyecto puede ejecutarse utilizando los datasets incluidos en la carpeta `Red_datasets` o generando una nueva red desde cero.
+
+### Opción 1: Utilizar los datasets existentes
+
+Si se desea utilizar los archivos ya incluidos en el repositorio (`DatasetRed.csv` y `DatasetRed_Normalizado.csv`), se puede omitir los pasos 1, 2 y 3 y proceder directamente al paso 4.
+
+---
+
+### Paso 1. Generar una nueva red
+
+Dentro de la carpeta `GeneracionDataset`, ejecutar:
+
+```bash
+python3 GeneracionDataset.py
+```
+
+Este script genera un nuevo dataset de red con nodos, enlaces y métricas QoS asociadas. Los detalles de la generación pueden consultarse en el README de la carpeta `GeneracionDataset`.
+
+---
+
+### Paso 2. Normalizar las métricas QoS
+
+Una vez generado el dataset, ejecutar:
+
+```bash
+python3 NormalizacionDataset.py
+```
+
+Este script realiza la normalización de las métricas QoS con el objetivo de que todas tengan una escala comparable durante el proceso de optimización.
+
+Además:
+
+- Normaliza las métricas de latencia, pérdida de paquetes y jitter.
+- Invierte el valor del ancho de banda, ya que este objetivo debe maximizarse mientras que los demás deben minimizarse.
+- Permite que todas las métricas sean tratadas de manera homogénea durante la evaluación multiobjetivo.
+
+El resultado es el archivo:
+
+```text
+DatasetRed_Normalizado.csv
+```
+
+---
+
+### Paso 3. Visualizar la red generada (Opcional)
+
+Para visualizar la topología de la red generada, se debe ejecutar dentro de la carpeta `VisualizacionDataset`:
+
+```bash
+python3 VisualizarRed.py
+```
+
+Este script muestra gráficamente:
+
+- Los nodos de la red.
+- Los enlaces entre nodos.
+
+---
+
+### Paso 4. Ejecutar el algoritmo ABC Multiobjetivo
+
+Desde la carpeta principal del proyecto (`qos-optimizacion-abc`), ejecutar:
+
+```bash
+python3 main.py
+```
+
+El archivo `main.py` se encarga de:
+
+1. Cargar el dataset normalizado.
+2. Construir el grafo dirigido utilizando NetworkX.
+3. Inicializar la colonia de abejas.
+4. Ejecutar el algoritmo ABC Multiobjetivo.
+5. Construir y actualizar el Frente de Pareto.
+6. Obtener las rutas óptimas encontradas.
+
+La implementación principal del algoritmo se encuentra en:
+
+```text
+QoS_ABC/ABC_Algoritmo.py
+```
+
+---
+
+### Paso 5. Analizar la convergencia del algoritmo
+
+Al finalizar la ejecución se genera automáticamente el archivo:
+
+```text
+FitnessResultados.csv
+```
+
+Este archivo almacena la evolución del mejor valor global obtenido durante las iteraciones del algoritmo.
+
+Para visualizar el comportamiento de convergencia, ejecutar dentro de la carpeta `VisualizacionDataset`:
+
+```bash
+python3 VisualizarMejorFitness.py
+```
+
+La gráfica resultante permite observar:
+
+- La evolución del fitness a lo largo de las iteraciones.
+- La velocidad de convergencia.
+- Posibles estancamientos del algoritmo.
+- La capacidad de mejora de las soluciones durante el proceso de optimización.
 
 ---
 
