@@ -1,195 +1,1728 @@
+<div align="left">
+
 # Generación de Datos de la Red
 
-Para evaluar el algoritmo de optimización de QoS, se genera una red sintética que simula condiciones realistas de telecomunicaciones. Esta red se modela como un grafo dirigido donde cada enlace contiene métricas clave de calidad de servicio.
+<br>
 
-## Modelo de Red
+Este módulo genera una red considerando simultáneamente métricas de Calidad de Servicio como **latencia, jitter, pérdida de paquetes y ancho de banda**.
 
-La topología de la red se construye utilizando el modelo de Barabási-Albert implementado mediante la librería NetworkX. Este modelo permite generar redes de libre escala, similares a infraestructuras reales como Internet, donde algunos nodos funcionan como hubs altamente conectados.
+</div>
 
-En el código, la red se crea con:
+---
+
+<div align="center">
+
+[Descripción](#-descripción) •
+[Modelo de red](#-modelo-de-red) •
+[Evolución](#-evolución-del-generador) •
+[Versión original](#-versión-original) •
+[Versión mejorada](#-versión-mejorada) •
+[Normalización](#-cambio-en-la-normalización) •
+[Estructura](#-estructura-de-archivos) •
+[Referencias](#-referencias)
+
+</div>
+
+---
+
+# 📌 Descripción
+
+Para evaluar el comportamiento del algoritmo de optimización se requiere una topología de red que permita generar y analizar diferentes rutas entre un nodo origen y un nodo destino.
+
+En este proyecto se utiliza una **red sintética**, lo que permite controlar las condiciones experimentales y repetir los experimentos bajo configuraciones conocidas.
+
+Entre las ventajas de este enfoque se encuentran:
+
+* generación controlada de la topología;
+* ejecución de múltiples escenarios;
+* reproducción de experimentos mediante semillas;
+* comparación entre versiones del algoritmo;
+* análisis individual de las métricas de QoS;
+* generación de diferentes instancias de red sin depender de infraestructura física.
+
+Cada enlace dirigido contiene cuatro métricas principales:
+
+<table>
+<tr>
+<th>Métrica</th>
+<th>Representación</th>
+<th>Objetivo</th>
+</tr>
+
+<tr>
+<td><b>Ancho de banda disponible</b></td>
+<td>Mbps</td>
+<td>⬆ Maximizar</td>
+</tr>
+
+<tr>
+<td><b>Latencia</b></td>
+<td>Milisegundos (ms)</td>
+<td>⬇ Minimizar</td>
+</tr>
+
+<tr>
+<td><b>Jitter</b></td>
+<td>Milisegundos (ms)</td>
+<td>⬇ Minimizar</td>
+</tr>
+
+<tr>
+<td><b>Pérdida de paquetes</b></td>
+<td>Proporción entre 0 y 1</td>
+<td>⬇ Minimizar</td>
+</tr>
+</table>
+
+> [!NOTE]
+> La pérdida de paquetes se almacena como proporción.
+> Por ejemplo, `0.01` representa una pérdida equivalente al **1 %**.
+
+---
+
+# 🕸️ Modelo de Red
+
+La topología se genera utilizando el modelo **Barabási-Albert**, implementado mediante la librería `NetworkX`.
+
+El modelo genera redes mediante un mecanismo conocido como **preferential attachment**, donde los nuevos nodos tienen mayor probabilidad de conectarse con nodos que ya poseen un mayor número de conexiones.
+
+La creación de la red se realiza mediante:
+
+```python
+base = nx.barabasi_albert_graph(
+    n=n,
+    m=m,
+    seed=seed
+)
+```
+
+Donde:
+
+* `n` representa el número total de nodos;
+* `m` representa el número de enlaces que crea cada nuevo nodo;
+* `seed` permite reproducir la misma topología.
+
+Antes de generar la red se valida que:
+
+```text
+1 <= m < n
+```
+
+mediante:
+
+```python
+if not 1 <= m < n:
+    raise ValueError("Debe cumplirse 1 <= m < n")
+```
+
+Posteriormente, la red no dirigida generada por Barabási-Albert se convierte en una red dirigida:
+
+```python
+G = base.to_directed()
+```
+
+Esto permite tratar independientemente los enlaces:
+
+```text
+u → v
+```
+
+y:
+
+```text
+v → u
+```
+
+De esta manera, cada dirección puede almacenar sus propias métricas QoS.
+
+---
+
+# 🔄 Evolución del Generador
+
+Durante el desarrollo del proyecto se utilizaron dos versiones principales del generador de red.
+
+La primera versión permitió construir el entorno experimental inicial y verificar el funcionamiento general del algoritmo.
+
+Después del análisis de dicha implementación se identificaron oportunidades de mejora relacionadas principalmente con:
+
+* reproducibilidad;
+* representación de la congestión;
+* relación entre las métricas QoS;
+* interpretación física de los datos;
+* organización del dataset;
+* proceso de normalización.
+
+<div align="center">
+
+### Evolución del entorno experimental
+
+**🔴 Versión Original**
+
+⬇
+
+Identificación de limitaciones
+
+⬇
+
+**Modelado explícito de utilización**
+
+⬇
+
+**Reproducibilidad mediante semillas**
+
+⬇
+
+**Separación entre capacidad y ancho de banda disponible**
+
+⬇
+
+**Eliminación de normalización global del dataset**
+
+⬇
+
+**🟢 Versión Mejorada**
+
+</div>
+
+---
+
+# 📊 Comparación
+
+<table>
+<tr>
+<th width="25%">Característica</th>
+<th width="37%">🔴 Versión Original</th>
+<th width="38%">🟢 Versión Mejorada</th>
+</tr>
+
+<tr>
+<td><b>Modelo</b></td>
+<td>Barabási-Albert</td>
+<td>Barabási-Albert</td>
+</tr>
+
+<tr>
+<td><b>Topología dirigida</b></td>
+<td>✅ Sí</td>
+<td>✅ Sí</td>
+</tr>
+
+<tr>
+<td><b>Semilla reproducible</b></td>
+<td>❌ No</td>
+<td>✅ Sí</td>
+</tr>
+
+<tr>
+<td><b>Random de Python</b></td>
+<td>Sin controlar</td>
+<td><code>random.Random(seed)</code></td>
+</tr>
+
+<tr>
+<td><b>NumPy</b></td>
+<td>No utilizado para congestión</td>
+<td><code>np.random.default_rng(seed)</code></td>
+</tr>
+
+<tr>
+<td><b>Topología NetworkX</b></td>
+<td>Sin semilla</td>
+<td>Semilla controlada</td>
+</tr>
+
+<tr>
+<td><b>Capacidad</b></td>
+<td>10–200 Mbps</td>
+<td>50–1000 Mbps</td>
+</tr>
+
+<tr>
+<td><b>Utilización explícita</b></td>
+<td>❌ No</td>
+<td>✅ Distribución Beta</td>
+</tr>
+
+<tr>
+<td><b>Ancho de banda</b></td>
+<td>Capacidad generada directamente</td>
+<td>Ancho de banda disponible según utilización</td>
+</tr>
+
+<tr>
+<td><b>Congestión</b></td>
+<td>Representación indirecta mediante <code>1 / bw</code></td>
+<td>Representación explícita mediante utilización</td>
+</tr>
+
+<tr>
+<td><b>Latencia</b></td>
+<td>Latencia base + penalización por ancho de banda</td>
+<td>Propagación + retardo por cola + variación</td>
+</tr>
+
+<tr>
+<td><b>Jitter</b></td>
+<td>Dependiente directamente de latencia</td>
+<td>Relacionado principalmente con congestión</td>
+</tr>
+
+<tr>
+<td><b>Pérdida</b></td>
+<td>Dependiente de <code>1 / bw</code></td>
+<td>Aumenta no linealmente con utilización</td>
+</tr>
+
+<tr>
+<td><b>Normalización externa</b></td>
+<td>✅ Min-Max</td>
+<td>❌ Eliminada</td>
+</tr>
+
+<tr>
+<td><b>Unidades originales</b></td>
+<td>Se perdían después de normalizar</td>
+<td>✅ Se conservan</td>
+</tr>
+
+<tr>
+<td><b>Creación de carpetas</b></td>
+<td>❌ Manual</td>
+<td>✅ Automática mediante pathlib</td>
+</tr>
+
+</table>
+
+---
+
+# 🔴 Versión Original
+
+<details>
+
+<summary><b>📂 Mostrar funcionamiento de la versión original</b></summary>
+
+<br>
+
+La implementación inicial generaba la red mediante:
 
 ```python
 G = nx.barabasi_albert_graph(n, m)
 G = G.to_directed()
 ```
 
-Donde:
+Posteriormente se asignaban las métricas QoS.
 
-- `n` representa el número total de nodos de la red.
-- `m` indica el número de conexiones nuevas que crea cada nodo al incorporarse a la red.
-
-Posteriormente, el grafo se convierte en dirigido para representar enlaces con flujo de tráfico en un único sentido.
-
----
-
-## Asignación de Métricas QoS
-
-Una vez generada la topología, se asignan métricas de Calidad de Servicio (QoS) a cada enlace del grafo utilizando valores aleatorios controlados.
-
-Esto se realiza recorriendo cada arista:
-
-```python
-for u, v in G.edges():
-```
-
-Cada enlace `(u,v)` recibe las siguientes métricas:
-
-### 1. Ancho de Banda (Bandwidth)
-
-El ancho de banda representa la capacidad de transmisión del enlace y se genera aleatoriamente en un rango de 10 a 200 Mbps:
+## Ancho de Banda
 
 ```python
 bw = random.uniform(10, 200)
 ```
 
-Esto permite simular enlaces con diferentes capacidades de transmisión.
+El ancho de banda se generaba directamente en un intervalo de:
+
+```text
+10 – 200 Mbps
+```
 
 ---
 
-### 2. Latencia
-
-La latencia representa el tiempo de retardo de transmisión y se calcula utilizando una latencia base aleatoria más un factor asociado al ancho de banda:
+## Latencia
 
 ```python
 base_latencia = random.uniform(1, 100)
-latencia = base_latencia + (1 / bw) * 100
+
+latencia = (
+    base_latencia
+    + (1 / bw) * 100
+)
 ```
 
-De esta forma, enlaces con menor ancho de banda generan una penalización adicional de latencia, simulando posibles efectos de congestión.
+El término:
+
+```python
+(1 / bw) * 100
+```
+
+introducía una penalización mayor para enlaces con menor ancho de banda.
 
 ---
 
-### 3. Jitter
+## Jitter
 
-El jitter representa la variación del retardo en la transmisión de paquetes. En la implementación, esta métrica depende parcialmente de la latencia:
+```python
+jitter = (
+    random.uniform(0, 5)
+    + 0.1 * latencia
+)
+```
+
+El jitter dependía directamente del valor completo de la latencia.
+
+---
+
+## Pérdida de Paquetes
+
+```python
+loss = (
+    random.uniform(0.0001, 0.01)
+    + (1 / bw) * 0.05
+)
+```
+
+La pérdida aumentaba automáticamente en enlaces con menor ancho de banda.
+
+---
+
+## Exportación
+
+La red se almacenaba mediante:
+
+```python
+def exportar_Red_a_ArchivoCSV(
+    G,
+    filename="../Red_datasets/DatasetRed.csv"
+):
+```
+
+La carpeta destino debía existir previamente.
+
+</details>
+
+---
+
+# ⚠️ Limitaciones de la Versión Original
+
+La primera implementación fue útil para construir el entorno experimental inicial, pero durante el desarrollo se identificaron diferentes aspectos que podían mejorarse.
+
+## 1. Falta de reproducibilidad
+
+No existía una semilla definida para:
+
+```python
+random
+```
+
+ni para:
+
+```python
+nx.barabasi_albert_graph()
+```
+
+Por lo tanto, ejecutar dos veces:
+
+```python
+G = generarRed(n=100, m=4)
+```
+
+podía producir tanto una topología diferente como valores QoS diferentes.
+
+Esto dificulta realizar comparaciones experimentales controladas.
+
+---
+
+## 2. La congestión no estaba representada explícitamente
+
+En la versión original, la congestión se aproximaba mediante relaciones como:
+
+```python
+1 / bw
+```
+
+Sin embargo, la capacidad de un enlace y su nivel de utilización representan conceptos distintos.
+
+Un enlace puede disponer de una capacidad elevada y encontrarse congestionado.
+
+De manera similar, un enlace con menor capacidad puede encontrarse poco utilizado.
+
+Por esta razón, en la nueva versión se decidió introducir explícitamente una variable de:
+
+```text
+utilización
+```
+
+---
+
+## 3. Dependencia elevada entre jitter y latencia
+
+La expresión:
 
 ```python
 jitter = random.uniform(0, 5) + 0.1 * latencia
 ```
 
-Esto modela el comportamiento típico de redes reales, donde mayores retardos suelen producir una mayor variabilidad temporal.
+hacía que una parte importante del jitter estuviera determinada directamente por la latencia.
+
+Aunque ambas métricas pueden estar relacionadas, representan propiedades diferentes de una comunicación.
+
+Por este motivo, la nueva versión mantiene una relación indirecta mediante las condiciones de congestión.
 
 ---
 
-### 4. Pérdida de Paquetes
+## 4. Pérdida asociada directamente al ancho de banda
 
-La pérdida de paquetes se genera utilizando valores pequeños típicos en redes de comunicación:
+La expresión:
 
 ```python
-loss = random.uniform(0.0001, 0.01) + (1 / bw) * 0.05
+(1 / bw) * 0.05
 ```
 
-La fórmula incorpora una dependencia inversa con el ancho de banda, haciendo que enlaces con menor capacidad presenten una probabilidad ligeramente mayor de pérdida.
+hacía que los enlaces de menor capacidad recibieran automáticamente una penalización adicional.
+
+La nueva implementación relaciona la pérdida principalmente con el nivel de utilización.
 
 ---
 
-## Almacenamiento de Datos
+# 🟢 Versión Mejorada
 
-Finalmente, todas las métricas generadas se almacenan como atributos de cada enlace dentro del grafo:
+La versión actual introduce un modelo donde las diferentes métricas QoS tienen como factor común las condiciones de utilización del enlace, pero conservan variación independiente.
 
-```python
-G[u][v]['AnchoBanda'] = bw
-G[u][v]['latencia'] = latencia
-G[u][v]['jitter'] = jitter
-G[u][v]['PaquetesPerdidos'] = loss
-```
----
+<div align="center">
 
-# Normalización de las Métricas QoS
+### Modelo conceptual
 
-Después de generar y almacenar las métricas de QoS de la red, se realiza un proceso de normalización de datos. Esta etapa es fundamental para evitar que métricas con escalas mayores dominen el proceso de optimización.
+**Capacidad física**
 
-Para ello, se utiliza la librería Pandas para cargar el dataset generado. Posteriormente, se crea una copia del conjunto de datos original para conservar los valores iniciales:
+⬇
 
-```python
-df_norm = df.copy()
-```
+**Utilización del enlace**
 
-Las columnas seleccionadas para normalización corresponden a las métricas QoS:
+⬇
 
-```python
-columnas = ["AnchoBanda", "Latencia", "jitter", "PaquetesPerdidos"]
-```
+**Congestión**
+
+⬇
+
+**QoS disponible**
+
+`Ancho de banda · Latencia · Jitter · Pérdida`
+
+</div>
 
 ---
 
-## Método de Normalización
+# 🎲 Reproducibilidad
 
-Se aplica una normalización Min-Max a cada métrica, transformando los valores al rango `[0,1]`.
+Una de las mejoras principales consiste en controlar las fuentes de aleatoriedad.
 
-La fórmula utilizada es:
+## Random de Python
+
+```python
+rng = random.Random(seed)
+```
+
+## NumPy
+
+```python
+np_rng = np.random.default_rng(seed)
+```
+
+## NetworkX
+
+```python
+base = nx.barabasi_albert_graph(
+    n=n,
+    m=m,
+    seed=seed
+)
+```
+
+Por defecto se utiliza:
+
+```python
+seed=42
+```
+
+De esta manera, si se ejecuta nuevamente:
+
+```python
+generar_red(
+    n=100,
+    m=4,
+    seed=42
+)
+```
+
+se obtiene la misma instancia de red.
+
+> [!IMPORTANT]
+> La reproducibilidad es especialmente importante durante la etapa experimental, ya que permite comparar diferentes configuraciones o versiones del algoritmo utilizando exactamente la misma red de entrada.
+
+---
+
+# 📡 Capacidad del Enlace
+
+La nueva versión distingue entre:
+
+* **capacidad física del enlace**;
+* **capacidad actualmente utilizada**;
+* **ancho de banda disponible**.
+
+Primero se genera la capacidad:
+
+```python
+capacidad = rng.uniform(
+    50.0,
+    1000.0
+)
+```
+
+El intervalo utilizado es:
 
 ```text
-(valor - mínimo) / (máximo - mínimo)
+50 – 1000 Mbps
 ```
 
-En el código, este proceso se implementa mediante:
+Esta variable representa la capacidad máxima del enlace antes de considerar su utilización.
+
+---
+
+# 📈 Utilización del Enlace
+
+La utilización se genera mediante una distribución Beta:
+
+```python
+utilizacion = float(
+    np_rng.beta(2.0, 4.0)
+)
+```
+
+La distribución Beta permite obtener valores dentro del intervalo:
+
+```text
+0 ≤ utilización ≤ 1
+```
+
+donde:
+
+```text
+0.00 → enlace prácticamente libre
+0.50 → aproximadamente 50 % utilizado
+0.90 → enlace altamente utilizado
+```
+
+La elección de `Beta(2,4)` permite generar con mayor frecuencia situaciones de utilización baja o moderada, manteniendo la posibilidad de obtener enlaces con congestión elevada.
+
+---
+
+# 🚀 Ancho de Banda Disponible
+
+A diferencia de la versión original, la variable `AnchoBanda` ya no representa directamente la capacidad total del enlace.
+
+Ahora representa la cantidad de capacidad que permanece disponible después de considerar la utilización.
+
+```python
+ancho_disponible = max(
+    1.0,
+    capacidad * (1.0 - utilizacion)
+)
+```
+
+Por ejemplo:
+
+```text
+Capacidad física = 800 Mbps
+Utilización      = 25 %
+
+Ancho disponible:
+
+800 × (1 - 0.25)
+
+= 600 Mbps
+```
+
+Esta representación permite diferenciar entre la capacidad máxima del enlace y los recursos realmente disponibles.
+
+---
+
+# ⏱️ Retardo de Propagación
+
+Se genera un retardo base:
+
+```python
+propagacion = rng.uniform(
+    1.0,
+    45.0
+)
+```
+
+representado en milisegundos.
+
+Este componente representa el retardo base del enlace antes de considerar efectos asociados con congestión.
+
+---
+
+# 🚦 Retardo por Cola
+
+La congestión se incorpora mediante:
+
+```python
+cola = (
+    2.5 * utilizacion
+    / max(
+        1.0 - utilizacion,
+        0.05
+    )
+)
+```
+
+Cuando la utilización es baja, el valor permanece pequeño.
+
+A medida que la utilización aumenta, el término:
+
+```text
+utilización
+────────────
+1-utilización
+```
+
+crece de manera no lineal.
+
+Conceptualmente:
+
+```text
+Utilización baja
+      ↓
+Retardo de cola pequeño
+
+Utilización media
+      ↓
+Retardo creciente
+
+Utilización elevada
+      ↓
+Incremento considerable del retardo
+```
+
+El límite:
+
+```python
+max(
+    1.0 - utilizacion,
+    0.05
+)
+```
+
+evita que el denominador tome valores demasiado pequeños.
+
+---
+
+# 🕐 Latencia
+
+La latencia se obtiene combinando tres componentes:
+
+```python
+latencia = (
+    propagacion
+    + cola
+    + rng.uniform(0.0, 2.0)
+)
+```
+
+De forma conceptual:
+
+```text
+                LATENCIA
+                   │
+        ┌──────────┼──────────┐
+        ↓          ↓          ↓
+   Propagación    Cola    Variación
+                              aleatoria
+```
+
+Esto permite que la latencia responda a las condiciones de congestión sin eliminar completamente la variabilidad entre enlaces.
+
+---
+
+# 📉 Jitter
+
+El jitter representa la variación temporal del retardo.
+
+Se genera mediante:
+
+```python
+jitter = (
+    rng.uniform(0.1, 3.0)
+    + rng.uniform(0.05, 0.25) * cola
+)
+```
+
+A diferencia de la versión anterior, ya no se calcula directamente como una fracción de toda la latencia.
+
+Ahora mantiene:
+
+* un componente independiente;
+* un componente relacionado con congestión.
+
+Esto permite conservar una correlación razonable entre congestión y jitter sin hacer que jitter y latencia sean prácticamente la misma variable escalada.
+
+---
+
+# 📦 Pérdida de Paquetes
+
+Primero se genera una pérdida base:
+
+```python
+perdida_base = rng.uniform(
+    0.00001,
+    0.002
+)
+```
+
+Posteriormente se incorpora el efecto de utilización:
+
+```python
+perdida = (
+    perdida_base
+    + 0.03 * (utilizacion ** 4)
+)
+```
+
+El término:
+
+```python
+utilizacion ** 4
+```
+
+hace que el incremento sea pequeño bajo condiciones normales, pero aumente significativamente cuando el enlace se encuentra altamente utilizado.
+
+Finalmente se establece un límite:
+
+```python
+perdida = min(
+    max(perdida, 0.0),
+    0.05
+)
+```
+
+Por lo tanto:
+
+```text
+0.05 = 5 %
+```
+
+es la pérdida máxima permitida por el generador.
+
+---
+
+# 🔗 Asignación de Métricas QoS
+
+Cada enlace dirigido almacena sus propios atributos:
+
+```python
+G[u][v]["AnchoBanda"] = ancho_disponible
+
+G[u][v]["Latencia"] = latencia
+
+G[u][v]["jitter"] = jitter
+
+G[u][v]["PaquetesPerdidos"] = perdida
+```
+
+El resultado conceptual es:
+
+```text
+Nodo u
+  │
+  │
+  │   AnchoBanda
+  │   Latencia
+  │   Jitter
+  │   PaquetesPerdidos
+  │
+  ▼
+Nodo v
+```
+
+---
+
+# 💾 Exportación del Dataset
+
+La versión mejorada utiliza `pathlib` para administrar la ruta de salida.
+
+```python
+filename = Path(filename)
+```
+
+Antes de generar el archivo se crean automáticamente las carpetas necesarias:
+
+```python
+filename.parent.mkdir(
+    parents=True,
+    exist_ok=True
+)
+```
+
+Esto evita errores cuando la carpeta destino todavía no existe.
+
+Posteriormente se genera el CSV:
+
+```python
+with filename.open(
+    "w",
+    newline="",
+    encoding="utf-8"
+) as f:
+```
+
+El encabezado contiene:
+
+```python
+writer.writerow([
+    "Origen",
+    "Destino",
+    "AnchoBanda",
+    "Latencia",
+    "jitter",
+    "PaquetesPerdidos"
+])
+```
+
+Cada fila representa:
+
+```text
+Origen → Destino
+```
+
+junto con las métricas QoS correspondientes.
+
+---
+
+# 📊 Cambio en la Normalización
+
+Una modificación importante respecto a la primera versión del proyecto es la eliminación del proceso independiente de normalización del dataset.
+
+<div align="center">
+
+<table>
+<tr>
+
+<td width="50%" align="center">
+
+### 🔴 Flujo anterior
+
+Dataset físico
+
+⬇
+
+Normalización Min-Max
+
+⬇
+
+Inversión de ancho de banda
+
+⬇
+
+Dataset `[0,1]`
+
+⬇
+
+Algoritmo
+
+</td>
+
+<td width="50%" align="center">
+
+### 🟢 Flujo actual
+
+Dataset físico
+
+⬇
+
+Métricas QoS originales
+
+⬇
+
+Evaluación de rutas
+
+⬇
+
+Objetivos independientes
+
+⬇
+
+Optimización multiobjetivo
+
+</td>
+
+</tr>
+</table>
+
+</div>
+
+---
+
+# 🔴 Normalización Utilizada Anteriormente
+
+<details>
+
+<summary><b>📂 Mostrar implementación anterior de normalización</b></summary>
+
+<br>
+
+El dataset original se cargaba mediante:
+
+```python
+df = pd.read_csv(
+    "../Red_datasets/DatasetRed.csv"
+)
+```
+
+Posteriormente se seleccionaban las métricas:
+
+```python
+columnas = [
+    "AnchoBanda",
+    "Latencia",
+    "jitter",
+    "PaquetesPerdidos"
+]
+```
+
+Se utilizaba normalización Min-Max:
 
 ```python
 for col in columnas:
+
     min_val = df[col].min()
     max_val = df[col].max()
 
     if max_val - min_val != 0:
-        df_norm[col] = (df[col] - min_val) / (max_val - min_val)
+
+        df_norm[col] = (
+            (df[col] - min_val)
+            / (max_val - min_val)
+        )
+
     else:
         df_norm[col] = 0
 ```
 
-Esta validación evita divisiones entre cero en caso de que todos los valores de una columna sean iguales.
+La transformación utilizada era:
+
+```text
+                 x - xmin
+x' = ─────────────────────────
+             xmax - xmin
+```
+
+Esto llevaba los valores al intervalo:
+
+```text
+[0,1]
+```
+
+Posteriormente se invertía el ancho de banda:
+
+```python
+df_norm["AnchoBanda"] = (
+    1 - df_norm["AnchoBanda"]
+)
+```
+
+El objetivo era transformar todas las métricas hacia una lógica de minimización.
+
+Finalmente se generaba:
+
+```text
+DatasetRed_Normalizado.csv
+```
+
+</details>
 
 ---
 
-## Inversión del Ancho de Banda
+# ❌ ¿Por qué se dejó de normalizar?
 
-Dentro del problema de optimización QoS, algunas métricas deben minimizarse, como:
-
-- Latencia
-- Jitter
-- Pérdida de paquetes
-
-Sin embargo, el ancho de banda representa una métrica de maximización, ya que valores mayores son preferibles.
-
-Para mantener un criterio uniforme de optimización, el ancho de banda se invierte utilizando:
-
-```python
-df_norm["AnchoBanda"] = 1 - df_norm["AnchoBanda"]
-```
-
-Con esta transformación:
-
-- Valores altos de ancho de banda producen costos menores
-- Valores bajos producen costos mayores
-
-Esto permite tratar todas las métricas bajo una misma lógica de minimización.
+> [!IMPORTANT]
+> La eliminación de la normalización **no significa que normalizar sea incorrecto**.
+>
+> La decisión consiste específicamente en **no modificar permanentemente el dataset de entrada**, ya que la formulación actual conserva los objetivos de QoS de manera independiente.
 
 ---
 
-## Almacenamiento del Dataset Normalizado
+## 1. La optimización es multiobjetivo
 
-Una vez completada la normalización, el nuevo conjunto de datos se almacena en un archivo CSV:
+El problema considera los siguientes objetivos:
 
-```python
-df_norm.to_csv("../Red_datasets/DatasetRed_Normalizado.csv",index=False)
+```text
+Minimizar Latencia
+Minimizar Jitter
+Minimizar Pérdida de paquetes
+Maximizar Ancho de banda
 ```
 
-El archivo resultante contiene todas las métricas escaladas y preparadas para ser utilizadas en algoritmos de optimización y selección de rutas QoS.
+En un problema multiobjetivo basado en **dominancia de Pareto**, no es necesario sumar estas magnitudes para determinar si una solución domina a otra.
+
+Por ejemplo, considerando dos soluciones:
+
+```text
+A = [latenciaA, jitterA, pérdidaA, anchoA]
+
+B = [latenciaB, jitterB, pérdidaB, anchoB]
+```
+
+cada objetivo puede compararse de acuerdo con su propia dirección.
+
+Por esta razón, todos los valores no necesitan estar dentro del mismo intervalo únicamente para aplicar dominancia.
 
 ---
 
-## Verificación Estadística
+## 2. Se conservan las unidades físicas
 
-Finalmente, se imprimen estadísticas descriptivas del dataset normalizado:
+Sin normalización es posible obtener resultados como:
 
-```python
-print(df_norm.describe())
+```text
+Latencia       = 32.59 ms
+Jitter         = 2.79 ms
+Pérdida        = 0.00189
+Ancho de banda = 508.44 Mbps
 ```
 
-Esto permite verificar:
+Estos resultados pueden interpretarse directamente.
 
-- valores mínimos y máximos
-- medias
-- desviaciones estándar
-- distribución general de las métricas normalizadas
+Después de una transformación Min-Max podrían convertirse, por ejemplo, en:
 
-asegurando que los datos estén correctamente preparados para el análisis posterior.
+```text
+Latencia       = 0.31
+Jitter         = 0.17
+Pérdida        = 0.08
+Ancho de banda = 0.46
+```
+
+Aunque estos números son válidos para determinados cálculos matemáticos, ya no permiten conocer directamente el comportamiento físico de la ruta.
+
+Mantener las unidades originales facilita:
+
+* interpretación de resultados;
+* comparación de rutas;
+* generación de tablas;
+* elaboración de gráficas;
+* análisis estadístico;
+* explicación de resultados en el reporte final.
+
+---
+
+## 3. Min-Max depende del mínimo y máximo de cada dataset
+
+La normalización Min-Max utiliza:
+
+```text
+xmin
+```
+
+y:
+
+```text
+xmax
+```
+
+observados en el conjunto de datos.
+
+Por lo tanto, si se genera una nueva instancia con otra semilla, estos extremos pueden ser diferentes.
+
+Por ejemplo:
+
+```text
+RED A
+
+Latencia mínima = 2 ms
+Latencia máxima = 60 ms
+```
+
+y:
+
+```text
+RED B
+
+Latencia mínima = 4 ms
+Latencia máxima = 100 ms
+```
+
+Un valor normalizado de:
+
+```text
+0.50
+```
+
+no representa necesariamente la misma cantidad de milisegundos en ambas redes.
+
+Para una etapa experimental basada en múltiples semillas, conservar las unidades originales facilita comparar resultados entre diferentes instancias.
+
+---
+
+## 4. La normalización anterior se aplicaba por enlace
+
+Existe otra consideración importante.
+
+Anteriormente se normalizaba cada enlace antes de calcular las métricas completas de una ruta.
+
+Para una métrica cualquiera:
+
+```text
+                 x - xmin
+x' = ─────────────────────────
+             xmax - xmin
+```
+
+Si una ruta contiene `k` enlaces y posteriormente se suman sus valores:
+
+```text
+Σ x'
+```
+
+entonces:
+
+```text
+          Σ(x - xmin)
+Σx' = ─────────────────
+          xmax - xmin
+```
+
+que equivale a:
+
+```text
+           Σx - k · xmin
+Σx' = ─────────────────────
+             xmax - xmin
+```
+
+Esto introduce un término:
+
+```text
+k · xmin
+```
+
+dependiente del número de enlaces de la ruta.
+
+Por tanto, la transformación no funciona únicamente como cambio de escala cuando se normaliza **antes de agregar los enlaces**.
+
+También puede modificar indirectamente la manera en que se penalizan rutas con diferente número de saltos.
+
+Por esta razón, resulta preferible calcular primero las métricas reales de cada ruta.
+
+---
+
+## 5. La generación de datos y la optimización quedan separadas
+
+En la implementación anterior, el dataset ya era modificado de acuerdo con las necesidades particulares del algoritmo.
+
+Por ejemplo:
+
+```python
+df_norm["AnchoBanda"] = (
+    1 - df_norm["AnchoBanda"]
+)
+```
+
+Con la nueva organización se busca separar:
+
+<div align="center">
+
+**Generación de la red**
+
+⬇
+
+**Datos físicos QoS**
+
+⬇
+
+**Evaluación de rutas**
+
+⬇
+
+**Algoritmo multiobjetivo**
+
+</div>
+
+El generador únicamente describe las características de la red.
+
+Es responsabilidad del algoritmo interpretar si cada objetivo debe:
+
+```text
+maximizarse
+```
+
+o:
+
+```text
+minimizarse
+```
+
+---
+
+# ⚠️ ¿Significa que nunca debe normalizarse?
+
+No.
+
+La normalización sigue siendo necesaria o conveniente cuando una operación matemática combina directamente objetivos cuyas unidades y escalas son diferentes.
+
+Por ejemplo:
+
+```python
+costo = (
+    latencia
+    + jitter
+    + perdida
+    + ancho_banda
+)
+```
+
+no constituye una comparación apropiada de las métricas originales, ya que se estarían sumando:
+
+```text
+milisegundos
++
+milisegundos
++
+proporciones
++
+Mbps
+```
+
+Además, el ancho de banda puede presentar valores numéricamente mucho mayores que las demás métricas.
+
+En ese caso sería necesario utilizar alguna estrategia como:
+
+* normalización interna;
+* pesos;
+* escalamiento;
+* funciones de utilidad;
+* otra formulación escalar apropiada.
+
+> [!WARNING]
+> **Eliminar el archivo normalizado no significa que cualquier suma directa de los objetivos originales sea correcta.**
+>
+> Si dentro del algoritmo se utiliza una función auxiliar que mezcla varias métricas en un único valor, esa operación debe manejar adecuadamente las diferencias de escala.
+
+---
+
+# 🧬 Pareto y Normalización
+
+La dominancia de Pareto analiza si una solución es mejor o igual que otra en todos los objetivos y estrictamente mejor en al menos uno.
+
+Por ejemplo:
+
+```text
+Ruta A
+
+Latencia = 20 ms
+Jitter   = 2 ms
+Pérdida  = 0.001
+Ancho    = 500 Mbps
+```
+
+frente a:
+
+```text
+Ruta B
+
+Latencia = 25 ms
+Jitter   = 3 ms
+Pérdida  = 0.002
+Ancho    = 450 Mbps
+```
+
+En este ejemplo, la ruta A es mejor en todos los objetivos.
+
+No es necesario transformar previamente:
+
+```text
+20 ms
+```
+
+y:
+
+```text
+500 Mbps
+```
+
+al mismo rango para determinar esta relación.
+
+---
+
+# 📐 Normalización Local
+
+Aunque el dataset ya no se normaliza globalmente, es posible realizar una normalización **únicamente dentro de un operador que la necesite**.
+
+Conceptualmente:
+
+```text
+Dataset original
+      │
+      │
+      ├──────────────► Dominancia de Pareto
+      │                     │
+      │                     └── utiliza valores originales
+      │
+      └──────────────► Operación basada en distancias
+                            │
+                            └── normalización local
+```
+
+Esta estrategia permite conservar los datos originales y utilizar escalamiento únicamente cuando existe una razón matemática para hacerlo.
+
+---
+
+# 📚 Ejemplo: NSGA-II
+
+Un ejemplo conocido de esta separación puede observarse en algoritmos evolutivos multiobjetivo.
+
+En **NSGA-II**, la dominancia se utiliza para clasificar las soluciones en diferentes frentes de Pareto.
+
+Sin embargo, para calcular la diversidad mediante la denominada **crowding distance**, las diferencias de cada objetivo se dividen por su rango.
+
+Esto demuestra que:
+
+> la ausencia de normalización global no impide aplicar normalización dentro de operaciones específicas que dependen de distancias o escalas.
+
+---
+
+# 🧪 Configuración Actual
+
+Actualmente se genera una red con:
+
+```python
+G = generar_red(
+    n=100,
+    m=4,
+    seed=42
+)
+```
+
+Donde:
+
+<table>
+<tr>
+<th>Parámetro</th>
+<th>Valor</th>
+<th>Descripción</th>
+</tr>
+
+<tr>
+<td><code>n</code></td>
+<td>100</td>
+<td>Número total de nodos</td>
+</tr>
+
+<tr>
+<td><code>m</code></td>
+<td>4</td>
+<td>Enlaces creados por cada nuevo nodo</td>
+</tr>
+
+<tr>
+<td><code>seed</code></td>
+<td>42</td>
+<td>Semilla utilizada para reproducibilidad</td>
+</tr>
+
+</table>
+
+La red se exporta mediante:
+
+```python
+exportar_red_csv(
+    G,
+    "../../Red_datasets/Mejorada/DatasetRed.csv"
+)
+```
+
+Al finalizar se imprime:
+
+```python
+print("Dataset generado correctamente.")
+
+print(
+    f"Número de nodos: "
+    f"{G.number_of_nodes()}"
+)
+
+print(
+    f"Número de enlaces dirigidos: "
+    f"{G.number_of_edges()}"
+)
+```
+
+---
+
+# 📁 Estructura de Archivos
+
+Se conservan tanto la versión original como la mejorada con el objetivo de documentar claramente la evolución del proyecto.
+
+```text
+proyecto/
+│
+├── Generacion_Red/
+│   │
+│   ├── Original/
+│   │   └── generar_red.py
+│   │
+│   └── Mejorada/
+│       └── generar_red.py
+│
+├── Red_datasets/
+│   │
+│   ├── Original/
+│   │   ├── DatasetRed.csv
+│   │   └── DatasetRed_Normalizado.csv
+│   │
+│   └── Mejorada/
+│       └── DatasetRed.csv
+│
+└── README.md
+```
+
+El archivo:
+
+```text
+DatasetRed_Normalizado.csv
+```
+
+se conserva únicamente como evidencia de la metodología utilizada durante la primera versión.
+
+No forma parte del flujo experimental actual.
+
+---
+
+# 🔬 Justificación de Mantener Ambas Versiones
+
+Conservar la implementación original permite documentar claramente el proceso de desarrollo.
+
+<div align="center">
+
+**Implementación inicial**
+
+⬇
+
+**Evaluación**
+
+⬇
+
+**Identificación de limitaciones**
+
+⬇
+
+**Propuesta de mejoras**
+
+⬇
+
+**Implementación mejorada**
+
+⬇
+
+**Comparación experimental**
+
+</div>
+
+Esto facilita demostrar que la versión actual no corresponde únicamente a una reescritura del código, sino a una evolución del modelo utilizado para generar las instancias experimentales.
+
+---
+
+# ✅ Mejoras Implementadas
+
+<table>
+<tr>
+<th>Mejora</th>
+<th>Estado</th>
+</tr>
+
+<tr>
+<td>Semilla reproducible</td>
+<td>✅</td>
+</tr>
+
+<tr>
+<td>Validación de parámetros</td>
+<td>✅</td>
+</tr>
+
+<tr>
+<td>Uso independiente de Random y NumPy</td>
+<td>✅</td>
+</tr>
+
+<tr>
+<td>Variable explícita de utilización</td>
+<td>✅</td>
+</tr>
+
+<tr>
+<td>Separación entre capacidad y ancho disponible</td>
+<td>✅</td>
+</tr>
+
+<tr>
+<td>Retardo por cola dependiente de utilización</td>
+<td>✅</td>
+</tr>
+
+<tr>
+<td>Jitter menos dependiente de latencia</td>
+<td>✅</td>
+</tr>
+
+<tr>
+<td>Pérdida relacionada con congestión</td>
+<td>✅</td>
+</tr>
+
+<tr>
+<td>Límite máximo de pérdida</td>
+<td>✅</td>
+</tr>
+
+<tr>
+<td>Creación automática de carpetas</td>
+<td>✅</td>
+</tr>
+
+<tr>
+<td>Conservación de unidades originales</td>
+<td>✅</td>
+</tr>
+
+<tr>
+<td>Eliminación de normalización global</td>
+<td>✅</td>
+</tr>
+
+<tr>
+<td>Conservación de versión original</td>
+<td>✅</td>
+</tr>
+
+</table>
+
+---
+
+# 🎯 Objetivo de la Versión Mejorada
+
+El objetivo de estos cambios es disponer de un generador que permita realizar experimentos de optimización bajo condiciones:
+
+```text
+Reproducibles
+      +
+Interpretables
+      +
+Controladas
+      +
+Comparables
+```
+
+La red resultante puede utilizarse posteriormente para evaluar el comportamiento de algoritmos multiobjetivo y analizar las rutas obtenidas considerando simultáneamente:
+
+```text
+Latencia
+Pérdida de paquetes
+Jitter
+Ancho de banda
+```
+
+---
+
+# 📖 Referencias
+
+## Modelo Barabási-Albert
+
+**Barabási, A. L., & Albert, R. (1999).**
+*Emergence of Scaling in Random Networks.*
+Science, 286(5439), 509–512.
+
+DOI:
+
+```text
+https://doi.org/10.1126/science.286.5439.509
+```
+
+---
+
+## NetworkX
+
+**NetworkX Developers.**
+*barabasi_albert_graph — NetworkX Documentation.*
+
+```text
+https://networkx.org/documentation/stable/reference/generated/networkx.generators.random_graphs.barabasi_albert_graph.html
+```
+
+La documentación establece, entre otros aspectos, el uso del parámetro `seed` para controlar el estado aleatorio utilizado durante la generación de la red.
+
+---
+
+## Optimización Multiobjetivo
+
+**Emmerich, M. T. M., & Deutz, A. H. (2018).**
+*A tutorial on multiobjective optimization: fundamentals and evolutionary methods.*
+Natural Computing, 17, 585–609.
+
+DOI:
+
+```text
+https://doi.org/10.1007/s11047-018-9685-y
+```
+
+---
+
+## NSGA-II
+
+**Deb, K., Pratap, A., Agarwal, S., & Meyarivan, T. (2002).**
+*A fast and elitist multiobjective genetic algorithm: NSGA-II.*
+IEEE Transactions on Evolutionary Computation, 6(2), 182–197.
+
+DOI:
+
+```text
+https://doi.org/10.1109/4235.996017
+```
+
+Este trabajo constituye una referencia importante para el tratamiento de optimización multiobjetivo, dominancia de Pareto y mecanismos de diversidad entre soluciones.
+
+---
+
+## Normalización Min-Max
+
+**Scikit-learn Developers.**
+*MinMaxScaler — scikit-learn Documentation.*
+
+```text
+https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.MinMaxScaler.html
+```
+
+La transformación Min-Max escala cada característica utilizando los valores mínimos y máximos observados.
+
+---
+
+# 📝 Nota Metodológica
+
+> [!NOTE]
+> La versión mejorada no pretende reproducir exactamente una red de telecomunicaciones real.
+>
+> Se trata de un **modelo sintético controlado** diseñado para proporcionar condiciones suficientemente variadas y coherentes para evaluar el comportamiento del algoritmo de optimización.
+>
+> Los rangos, distribuciones y relaciones utilizados entre las métricas forman parte del modelo experimental y pueden modificarse posteriormente para evaluar nuevos escenarios.
+
+---
+
+<div align="center">
+
+## 🚀 Estado Actual
+
+| Componente                     | Estado          |
+| ------------------------------ | --------------- |
+| Generador original             | ✅ Conservado    |
+| Generador mejorado             | ✅ Implementado  |
+| Semillas reproducibles         | ✅ Implementadas |
+| Modelado de utilización        | ✅ Implementado  |
+| Dataset original               | ✅ Conservado    |
+| Dataset normalizado antiguo    | 📦 Histórico    |
+| Normalización global actual    | ❌ Eliminada     |
+| Dataset mejorado               | ✅ Activo        |
+| Preparado para experimentación | ✅               |
+
+<br>
+
+### Optimización Multiobjetivo de Rutas QoS
+
+**Generación reproducible · Métricas interpretables · Comparación experimental**
+
+</div>
