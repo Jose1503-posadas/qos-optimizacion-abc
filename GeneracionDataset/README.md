@@ -37,25 +37,25 @@ Cada enlace dirigido contiene cuatro métricas principales:
 <tr>
 <td><b>Ancho de banda disponible</b></td>
 <td>Mbps</td>
-<td>⬆ Maximizar</td>
+<td>Maximizar</td>
 </tr>
 
 <tr>
 <td><b>Latencia</b></td>
 <td>Milisegundos (ms)</td>
-<td>⬇ Minimizar</td>
+<td>Minimizar</td>
 </tr>
 
 <tr>
 <td><b>Jitter</b></td>
 <td>Milisegundos (ms)</td>
-<td>⬇ Minimizar</td>
+<td>Minimizar</td>
 </tr>
 
 <tr>
 <td><b>Pérdida de paquetes</b></td>
 <td>Proporción entre 0 y 1</td>
-<td>⬇ Minimizar</td>
+<td>Minimizar</td>
 </tr>
 </table>
 
