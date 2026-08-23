@@ -10,21 +10,6 @@ Este módulo genera una red considerando simultáneamente métricas de Calidad d
 
 ---
 
-<div align="center">
-
-[Descripción](#-descripción) •
-[Modelo de red](#-modelo-de-red) •
-[Evolución](#-evolución-del-generador) •
-[Versión original](#-versión-original) •
-[Versión mejorada](#-versión-mejorada) •
-[Normalización](#-cambio-en-la-normalización) •
-[Estructura](#-estructura-de-archivos) •
-[Referencias](#-referencias)
-
-</div>
-
----
-
 # Descripción
 
 Para evaluar el comportamiento del algoritmo de optimización se requiere una topología de red que permita generar y analizar diferentes rutas entre un nodo origen y un nodo destino.
