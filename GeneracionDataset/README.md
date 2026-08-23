@@ -25,20 +25,20 @@ Este módulo genera una red considerando simultáneamente métricas de Calidad d
 
 ---
 
-# 📌 Descripción
+# Descripción
 
 Para evaluar el comportamiento del algoritmo de optimización se requiere una topología de red que permita generar y analizar diferentes rutas entre un nodo origen y un nodo destino.
 
-En este proyecto se utiliza una **red sintética**, lo que permite controlar las condiciones experimentales y repetir los experimentos bajo configuraciones conocidas.
+En este proyecto se utiliza una **red**, que permite controlar las condiciones experimentales y repetir los experimentos bajo configuraciones conocidas.
 
 Entre las ventajas de este enfoque se encuentran:
 
-* generación controlada de la topología;
-* ejecución de múltiples escenarios;
-* reproducción de experimentos mediante semillas;
-* comparación entre versiones del algoritmo;
-* análisis individual de las métricas de QoS;
-* generación de diferentes instancias de red sin depender de infraestructura física.
+* generación controlada de la red
+* ejecución de múltiples escenarios
+* reproducción de experimentos mediante semillas
+* comparación entre versiones del algoritmo
+* análisis individual de las métricas de QoS
+* generación de diferentes instancias de red sin depender de infraestructura física
 
 Cada enlace dirigido contiene cuatro métricas principales:
 
@@ -74,13 +74,11 @@ Cada enlace dirigido contiene cuatro métricas principales:
 </tr>
 </table>
 
-> [!NOTE]
-> La pérdida de paquetes se almacena como proporción.
-> Por ejemplo, `0.01` representa una pérdida equivalente al **1 %**.
+
 
 ---
 
-# 🕸️ Modelo de Red
+# Modelo de Red
 
 La topología se genera utilizando el modelo **Barabási-Albert**, implementado mediante la librería `NetworkX`.
 
@@ -98,9 +96,9 @@ base = nx.barabasi_albert_graph(
 
 Donde:
 
-* `n` representa el número total de nodos;
-* `m` representa el número de enlaces que crea cada nuevo nodo;
-* `seed` permite reproducir la misma topología.
+* `n` representa el número total de nodos
+* `m` representa el número de enlaces que crea cada nuevo nodo
+* `seed` permite reproducir la misma red
 
 Antes de generar la red se valida que:
 
@@ -123,21 +121,13 @@ G = base.to_directed()
 
 Esto permite tratar independientemente los enlaces:
 
-```text
-u → v
-```
-
-y:
-
-```text
-v → u
-```
+`u → v` &nbsp;&nbsp;&nbsp; y &nbsp;&nbsp;&nbsp; `v → u`
 
 De esta manera, cada dirección puede almacenar sus propias métricas QoS.
 
 ---
 
-# 🔄 Evolución del Generador
+# Evolución del Generador de la Red
 
 Durante el desarrollo del proyecto se utilizaron dos versiones principales del generador de red.
 
@@ -145,54 +135,25 @@ La primera versión permitió construir el entorno experimental inicial y verifi
 
 Después del análisis de dicha implementación se identificaron oportunidades de mejora relacionadas principalmente con:
 
-* reproducibilidad;
-* representación de la congestión;
-* relación entre las métricas QoS;
-* interpretación física de los datos;
-* organización del dataset;
-* proceso de normalización.
+* reproducibilidad
+* representación de la congestión
+* relación entre las métricas QoS
+* interpretación física de los datos
+* organización del dataset
+* proceso de normalización
 
 <div align="center">
-
-### Evolución del entorno experimental
-
-**🔴 Versión Original**
-
-⬇
-
-Identificación de limitaciones
-
-⬇
-
-**Modelado explícito de utilización**
-
-⬇
-
-**Reproducibilidad mediante semillas**
-
-⬇
-
-**Separación entre capacidad y ancho de banda disponible**
-
-⬇
-
-**Eliminación de normalización global del dataset**
-
-⬇
-
-**🟢 Versión Mejorada**
-
 </div>
 
 ---
 
-# 📊 Comparación
+### Comparación
 
 <table>
 <tr>
 <th width="25%">Característica</th>
-<th width="37%">🔴 Versión Original</th>
-<th width="38%">🟢 Versión Mejorada</th>
+<th width="37%"> Versión Original</th>
+<th width="38%"> Versión Mejorada</th>
 </tr>
 
 <tr>
@@ -203,14 +164,14 @@ Identificación de limitaciones
 
 <tr>
 <td><b>Topología dirigida</b></td>
-<td>✅ Sí</td>
-<td>✅ Sí</td>
+<td> Sí</td>
+<td> Sí</td>
 </tr>
 
 <tr>
 <td><b>Semilla reproducible</b></td>
-<td>❌ No</td>
-<td>✅ Sí</td>
+<td> No</td>
+<td> Sí</td>
 </tr>
 
 <tr>
@@ -239,8 +200,8 @@ Identificación de limitaciones
 
 <tr>
 <td><b>Utilización explícita</b></td>
-<td>❌ No</td>
-<td>✅ Distribución Beta</td>
+<td> No</td>
+<td> Distribución Beta</td>
 </tr>
 
 <tr>
@@ -275,31 +236,18 @@ Identificación de limitaciones
 
 <tr>
 <td><b>Normalización externa</b></td>
-<td>✅ Min-Max</td>
-<td>❌ Eliminada</td>
+<td> Min-Max</td>
+<td> Eliminada</td>
 </tr>
-
-<tr>
-<td><b>Unidades originales</b></td>
-<td>Se perdían después de normalizar</td>
-<td>✅ Se conservan</td>
-</tr>
-
-<tr>
-<td><b>Creación de carpetas</b></td>
-<td>❌ Manual</td>
-<td>✅ Automática mediante pathlib</td>
-</tr>
-
 </table>
 
 ---
 
-# 🔴 Versión Original
+# Versión Original
 
 <details>
 
-<summary><b>📂 Mostrar funcionamiento de la versión original</b></summary>
+<summary><b> Mostrar funcionamiento de la versión original</b></summary>
 
 <br>
 
@@ -371,26 +319,11 @@ loss = (
 
 La pérdida aumentaba automáticamente en enlaces con menor ancho de banda.
 
----
-
-## Exportación
-
-La red se almacenaba mediante:
-
-```python
-def exportar_Red_a_ArchivoCSV(
-    G,
-    filename="../Red_datasets/DatasetRed.csv"
-):
-```
-
-La carpeta destino debía existir previamente.
-
 </details>
 
 ---
 
-# ⚠️ Limitaciones de la Versión Original
+# Limitaciones de la Versión Original
 
 La primera implementación fue útil para construir el entorno experimental inicial, pero durante el desarrollo se identificaron diferentes aspectos que podían mejorarse.
 
@@ -472,35 +405,13 @@ La nueva implementación relaciona la pérdida principalmente con el nivel de ut
 
 ---
 
-# 🟢 Versión Mejorada
+# Versión Mejorada
 
 La versión actual introduce un modelo donde las diferentes métricas QoS tienen como factor común las condiciones de utilización del enlace, pero conservan variación independiente.
 
-<div align="center">
-
-### Modelo conceptual
-
-**Capacidad física**
-
-⬇
-
-**Utilización del enlace**
-
-⬇
-
-**Congestión**
-
-⬇
-
-**QoS disponible**
-
-`Ancho de banda · Latencia · Jitter · Pérdida`
-
-</div>
-
 ---
 
-# 🎲 Reproducibilidad
+# Reproducibilidad
 
 Una de las mejoras principales consiste en controlar las fuentes de aleatoriedad.
 
@@ -543,13 +454,9 @@ generar_red(
 ```
 
 se obtiene la misma instancia de red.
-
-> [!IMPORTANT]
-> La reproducibilidad es especialmente importante durante la etapa experimental, ya que permite comparar diferentes configuraciones o versiones del algoritmo utilizando exactamente la misma red de entrada.
-
 ---
 
-# 📡 Capacidad del Enlace
+# Capacidad del Enlace
 
 La nueva versión distingue entre:
 
@@ -576,7 +483,7 @@ Esta variable representa la capacidad máxima del enlace antes de considerar su 
 
 ---
 
-# 📈 Utilización del Enlace
+# Utilización del Enlace
 
 La utilización se genera mediante una distribución Beta:
 
@@ -604,7 +511,7 @@ La elección de `Beta(2,4)` permite generar con mayor frecuencia situaciones de 
 
 ---
 
-# 🚀 Ancho de Banda Disponible
+# Ancho de Banda Disponible
 
 A diferencia de la versión original, la variable `AnchoBanda` ya no representa directamente la capacidad total del enlace.
 
@@ -634,7 +541,7 @@ Esta representación permite diferenciar entre la capacidad máxima del enlace y
 
 ---
 
-# ⏱️ Retardo de Propagación
+# Retardo de Propagación
 
 Se genera un retardo base:
 
@@ -651,7 +558,7 @@ Este componente representa el retardo base del enlace antes de considerar efecto
 
 ---
 
-# 🚦 Retardo por Cola
+# Retardo por Cola
 
 La congestión se incorpora mediante:
 
@@ -679,19 +586,11 @@ crece de manera no lineal.
 
 Conceptualmente:
 
-```text
-Utilización baja
-      ↓
-Retardo de cola pequeño
-
-Utilización media
-      ↓
-Retardo creciente
-
-Utilización elevada
-      ↓
-Incremento considerable del retardo
-```
+| Nivel de utilización | Efecto sobre el retardo |
+|---|---|
+| **Baja** | Retardo de cola pequeño |
+| **Media** | Retardo creciente |
+| **Elevada** | Incremento considerable del retardo |
 
 El límite:
 
@@ -706,7 +605,7 @@ evita que el denominador tome valores demasiado pequeños.
 
 ---
 
-# 🕐 Latencia
+# Latencia
 
 La latencia se obtiene combinando tres componentes:
 
@@ -733,7 +632,7 @@ Esto permite que la latencia responda a las condiciones de congestión sin elimi
 
 ---
 
-# 📉 Jitter
+#  Jitter
 
 El jitter representa la variación temporal del retardo.
 
@@ -757,7 +656,7 @@ Esto permite conservar una correlación razonable entre congestión y jitter sin
 
 ---
 
-# 📦 Pérdida de Paquetes
+# Pérdida de Paquetes
 
 Primero se genera una pérdida base:
 
@@ -804,7 +703,7 @@ es la pérdida máxima permitida por el generador.
 
 ---
 
-# 🔗 Asignación de Métricas QoS
+# Asignación de Métricas QoS
 
 Cada enlace dirigido almacena sus propios atributos:
 
@@ -835,127 +734,16 @@ Nodo v
 
 ---
 
-# 💾 Exportación del Dataset
-
-La versión mejorada utiliza `pathlib` para administrar la ruta de salida.
-
-```python
-filename = Path(filename)
-```
-
-Antes de generar el archivo se crean automáticamente las carpetas necesarias:
-
-```python
-filename.parent.mkdir(
-    parents=True,
-    exist_ok=True
-)
-```
-
-Esto evita errores cuando la carpeta destino todavía no existe.
-
-Posteriormente se genera el CSV:
-
-```python
-with filename.open(
-    "w",
-    newline="",
-    encoding="utf-8"
-) as f:
-```
-
-El encabezado contiene:
-
-```python
-writer.writerow([
-    "Origen",
-    "Destino",
-    "AnchoBanda",
-    "Latencia",
-    "jitter",
-    "PaquetesPerdidos"
-])
-```
-
-Cada fila representa:
-
-```text
-Origen → Destino
-```
-
-junto con las métricas QoS correspondientes.
-
----
-
-# 📊 Cambio en la Normalización
+# Cambio en la Normalización
 
 Una modificación importante respecto a la primera versión del proyecto es la eliminación del proceso independiente de normalización del dataset.
-
-<div align="center">
-
-<table>
-<tr>
-
-<td width="50%" align="center">
-
-### 🔴 Flujo anterior
-
-Dataset físico
-
-⬇
-
-Normalización Min-Max
-
-⬇
-
-Inversión de ancho de banda
-
-⬇
-
-Dataset `[0,1]`
-
-⬇
-
-Algoritmo
-
-</td>
-
-<td width="50%" align="center">
-
-### 🟢 Flujo actual
-
-Dataset físico
-
-⬇
-
-Métricas QoS originales
-
-⬇
-
-Evaluación de rutas
-
-⬇
-
-Objetivos independientes
-
-⬇
-
-Optimización multiobjetivo
-
-</td>
-
-</tr>
-</table>
-
-</div>
-
 ---
 
-# 🔴 Normalización Utilizada Anteriormente
+# Normalización Utilizada Anteriormente
 
 <details>
 
-<summary><b>📂 Mostrar implementación anterior de normalización</b></summary>
+<summary><b> Mostrar implementación anterior de normalización</b></summary>
 
 <br>
 
@@ -1031,11 +819,8 @@ DatasetRed_Normalizado.csv
 
 ---
 
-# ❌ ¿Por qué se dejó de normalizar?
+# ¿Por qué se dejó de normalizar?
 
-> [!IMPORTANT]
-> La eliminación de la normalización **no significa que normalizar sea incorrecto**.
->
 > La decisión consiste específicamente en **no modificar permanentemente el dataset de entrada**, ya que la formulación actual conserva los objetivos de QoS de manera independiente.
 
 ---
@@ -1093,60 +878,28 @@ Aunque estos números son válidos para determinados cálculos matemáticos, ya 
 
 Mantener las unidades originales facilita:
 
-* interpretación de resultados;
-* comparación de rutas;
-* generación de tablas;
-* elaboración de gráficas;
-* análisis estadístico;
-* explicación de resultados en el reporte final.
+* interpretación de resultados
+* comparación de rutas
+* generación de tablas
+* elaboración de gráficas
+* análisis estadístico
+* explicación de resultados en el reporte final
 
 ---
 
+
 ## 3. Min-Max depende del mínimo y máximo de cada dataset
 
-La normalización Min-Max utiliza:
+La normalización Min-Max utiliza los valores **xmin** y **xmax** observados en cada conjunto de datos. Por ello, al generar nuevas instancias con diferentes semillas, estos extremos pueden cambiar.
 
-```text
-xmin
-```
+| Red | Latencia mínima | Latencia máxima |
+|:---:|:---:|:---:|
+| **A** | 2 ms | 60 ms |
+| **B** | 4 ms | 100 ms |
 
-y:
+Por ejemplo, un valor normalizado de **0.50** no representa necesariamente la misma cantidad de milisegundos en ambas redes.
 
-```text
-xmax
-```
-
-observados en el conjunto de datos.
-
-Por lo tanto, si se genera una nueva instancia con otra semilla, estos extremos pueden ser diferentes.
-
-Por ejemplo:
-
-```text
-RED A
-
-Latencia mínima = 2 ms
-Latencia máxima = 60 ms
-```
-
-y:
-
-```text
-RED B
-
-Latencia mínima = 4 ms
-Latencia máxima = 100 ms
-```
-
-Un valor normalizado de:
-
-```text
-0.50
-```
-
-no representa necesariamente la misma cantidad de milisegundos en ambas redes.
-
-Para una etapa experimental basada en múltiples semillas, conservar las unidades originales facilita comparar resultados entre diferentes instancias.
+Por esta razón conservar las unidades originales facilita la comparación de resultados entre diferentes instancias.
 
 ---
 
@@ -1202,437 +955,13 @@ Por esta razón, resulta preferible calcular primero las métricas reales de cad
 
 ---
 
-## 5. La generación de datos y la optimización quedan separadas
-
-En la implementación anterior, el dataset ya era modificado de acuerdo con las necesidades particulares del algoritmo.
-
-Por ejemplo:
-
-```python
-df_norm["AnchoBanda"] = (
-    1 - df_norm["AnchoBanda"]
-)
-```
-
-Con la nueva organización se busca separar:
-
-<div align="center">
-
-**Generación de la red**
-
-⬇
-
-**Datos físicos QoS**
-
-⬇
-
-**Evaluación de rutas**
-
-⬇
-
-**Algoritmo multiobjetivo**
-
-</div>
-
-El generador únicamente describe las características de la red.
-
-Es responsabilidad del algoritmo interpretar si cada objetivo debe:
-
-```text
-maximizarse
-```
-
-o:
-
-```text
-minimizarse
-```
-
----
-
-# ⚠️ ¿Significa que nunca debe normalizarse?
-
-No.
-
-La normalización sigue siendo necesaria o conveniente cuando una operación matemática combina directamente objetivos cuyas unidades y escalas son diferentes.
-
-Por ejemplo:
-
-```python
-costo = (
-    latencia
-    + jitter
-    + perdida
-    + ancho_banda
-)
-```
-
-no constituye una comparación apropiada de las métricas originales, ya que se estarían sumando:
-
-```text
-milisegundos
-+
-milisegundos
-+
-proporciones
-+
-Mbps
-```
-
-Además, el ancho de banda puede presentar valores numéricamente mucho mayores que las demás métricas.
-
-En ese caso sería necesario utilizar alguna estrategia como:
-
-* normalización interna;
-* pesos;
-* escalamiento;
-* funciones de utilidad;
-* otra formulación escalar apropiada.
-
-> [!WARNING]
-> **Eliminar el archivo normalizado no significa que cualquier suma directa de los objetivos originales sea correcta.**
->
-> Si dentro del algoritmo se utiliza una función auxiliar que mezcla varias métricas en un único valor, esa operación debe manejar adecuadamente las diferencias de escala.
-
----
-
-# 🧬 Pareto y Normalización
-
-La dominancia de Pareto analiza si una solución es mejor o igual que otra en todos los objetivos y estrictamente mejor en al menos uno.
-
-Por ejemplo:
-
-```text
-Ruta A
-
-Latencia = 20 ms
-Jitter   = 2 ms
-Pérdida  = 0.001
-Ancho    = 500 Mbps
-```
-
-frente a:
-
-```text
-Ruta B
-
-Latencia = 25 ms
-Jitter   = 3 ms
-Pérdida  = 0.002
-Ancho    = 450 Mbps
-```
-
-En este ejemplo, la ruta A es mejor en todos los objetivos.
-
-No es necesario transformar previamente:
-
-```text
-20 ms
-```
-
-y:
-
-```text
-500 Mbps
-```
-
-al mismo rango para determinar esta relación.
-
----
-
-# 📐 Normalización Local
-
-Aunque el dataset ya no se normaliza globalmente, es posible realizar una normalización **únicamente dentro de un operador que la necesite**.
-
-Conceptualmente:
-
-```text
-Dataset original
-      │
-      │
-      ├──────────────► Dominancia de Pareto
-      │                     │
-      │                     └── utiliza valores originales
-      │
-      └──────────────► Operación basada en distancias
-                            │
-                            └── normalización local
-```
-
-Esta estrategia permite conservar los datos originales y utilizar escalamiento únicamente cuando existe una razón matemática para hacerlo.
-
----
-
-# 📚 Ejemplo: NSGA-II
-
-Un ejemplo conocido de esta separación puede observarse en algoritmos evolutivos multiobjetivo.
-
-En **NSGA-II**, la dominancia se utiliza para clasificar las soluciones en diferentes frentes de Pareto.
-
-Sin embargo, para calcular la diversidad mediante la denominada **crowding distance**, las diferencias de cada objetivo se dividen por su rango.
-
-Esto demuestra que:
-
-> la ausencia de normalización global no impide aplicar normalización dentro de operaciones específicas que dependen de distancias o escalas.
-
----
-
-# 🧪 Configuración Actual
-
-Actualmente se genera una red con:
-
-```python
-G = generar_red(
-    n=100,
-    m=4,
-    seed=42
-)
-```
-
-Donde:
-
-<table>
-<tr>
-<th>Parámetro</th>
-<th>Valor</th>
-<th>Descripción</th>
-</tr>
-
-<tr>
-<td><code>n</code></td>
-<td>100</td>
-<td>Número total de nodos</td>
-</tr>
-
-<tr>
-<td><code>m</code></td>
-<td>4</td>
-<td>Enlaces creados por cada nuevo nodo</td>
-</tr>
-
-<tr>
-<td><code>seed</code></td>
-<td>42</td>
-<td>Semilla utilizada para reproducibilidad</td>
-</tr>
-
-</table>
-
-La red se exporta mediante:
-
-```python
-exportar_red_csv(
-    G,
-    "../../Red_datasets/Mejorada/DatasetRed.csv"
-)
-```
-
-Al finalizar se imprime:
-
-```python
-print("Dataset generado correctamente.")
-
-print(
-    f"Número de nodos: "
-    f"{G.number_of_nodes()}"
-)
-
-print(
-    f"Número de enlaces dirigidos: "
-    f"{G.number_of_edges()}"
-)
-```
-
----
-
-# 📁 Estructura de Archivos
-
-Se conservan tanto la versión original como la mejorada con el objetivo de documentar claramente la evolución del proyecto.
-
-```text
-proyecto/
-│
-├── Generacion_Red/
-│   │
-│   ├── Original/
-│   │   └── generar_red.py
-│   │
-│   └── Mejorada/
-│       └── generar_red.py
-│
-├── Red_datasets/
-│   │
-│   ├── Original/
-│   │   ├── DatasetRed.csv
-│   │   └── DatasetRed_Normalizado.csv
-│   │
-│   └── Mejorada/
-│       └── DatasetRed.csv
-│
-└── README.md
-```
-
-El archivo:
-
-```text
-DatasetRed_Normalizado.csv
-```
-
-se conserva únicamente como evidencia de la metodología utilizada durante la primera versión.
-
-No forma parte del flujo experimental actual.
-
----
-
-# 🔬 Justificación de Mantener Ambas Versiones
-
-Conservar la implementación original permite documentar claramente el proceso de desarrollo.
-
-<div align="center">
-
-**Implementación inicial**
-
-⬇
-
-**Evaluación**
-
-⬇
-
-**Identificación de limitaciones**
-
-⬇
-
-**Propuesta de mejoras**
-
-⬇
-
-**Implementación mejorada**
-
-⬇
-
-**Comparación experimental**
-
-</div>
-
-Esto facilita demostrar que la versión actual no corresponde únicamente a una reescritura del código, sino a una evolución del modelo utilizado para generar las instancias experimentales.
-
----
-
-# ✅ Mejoras Implementadas
-
-<table>
-<tr>
-<th>Mejora</th>
-<th>Estado</th>
-</tr>
-
-<tr>
-<td>Semilla reproducible</td>
-<td>✅</td>
-</tr>
-
-<tr>
-<td>Validación de parámetros</td>
-<td>✅</td>
-</tr>
-
-<tr>
-<td>Uso independiente de Random y NumPy</td>
-<td>✅</td>
-</tr>
-
-<tr>
-<td>Variable explícita de utilización</td>
-<td>✅</td>
-</tr>
-
-<tr>
-<td>Separación entre capacidad y ancho disponible</td>
-<td>✅</td>
-</tr>
-
-<tr>
-<td>Retardo por cola dependiente de utilización</td>
-<td>✅</td>
-</tr>
-
-<tr>
-<td>Jitter menos dependiente de latencia</td>
-<td>✅</td>
-</tr>
-
-<tr>
-<td>Pérdida relacionada con congestión</td>
-<td>✅</td>
-</tr>
-
-<tr>
-<td>Límite máximo de pérdida</td>
-<td>✅</td>
-</tr>
-
-<tr>
-<td>Creación automática de carpetas</td>
-<td>✅</td>
-</tr>
-
-<tr>
-<td>Conservación de unidades originales</td>
-<td>✅</td>
-</tr>
-
-<tr>
-<td>Eliminación de normalización global</td>
-<td>✅</td>
-</tr>
-
-<tr>
-<td>Conservación de versión original</td>
-<td>✅</td>
-</tr>
-
-</table>
-
----
-
-# 🎯 Objetivo de la Versión Mejorada
-
-El objetivo de estos cambios es disponer de un generador que permita realizar experimentos de optimización bajo condiciones:
-
-```text
-Reproducibles
-      +
-Interpretables
-      +
-Controladas
-      +
-Comparables
-```
-
-La red resultante puede utilizarse posteriormente para evaluar el comportamiento de algoritmos multiobjetivo y analizar las rutas obtenidas considerando simultáneamente:
-
-```text
-Latencia
-Pérdida de paquetes
-Jitter
-Ancho de banda
-```
-
----
-
-# 📖 Referencias
+# Referencias
 
 ## Modelo Barabási-Albert
 
 **Barabási, A. L., & Albert, R. (1999).**
 *Emergence of Scaling in Random Networks.*
 Science, 286(5439), 509–512.
-
-DOI:
-
-```text
-https://doi.org/10.1126/science.286.5439.509
-```
 
 ---
 
@@ -1645,39 +974,12 @@ https://doi.org/10.1126/science.286.5439.509
 https://networkx.org/documentation/stable/reference/generated/networkx.generators.random_graphs.barabasi_albert_graph.html
 ```
 
-La documentación establece, entre otros aspectos, el uso del parámetro `seed` para controlar el estado aleatorio utilizado durante la generación de la red.
-
----
 
 ## Optimización Multiobjetivo
 
 **Emmerich, M. T. M., & Deutz, A. H. (2018).**
 *A tutorial on multiobjective optimization: fundamentals and evolutionary methods.*
 Natural Computing, 17, 585–609.
-
-DOI:
-
-```text
-https://doi.org/10.1007/s11047-018-9685-y
-```
-
----
-
-## NSGA-II
-
-**Deb, K., Pratap, A., Agarwal, S., & Meyarivan, T. (2002).**
-*A fast and elitist multiobjective genetic algorithm: NSGA-II.*
-IEEE Transactions on Evolutionary Computation, 6(2), 182–197.
-
-DOI:
-
-```text
-https://doi.org/10.1109/4235.996017
-```
-
-Este trabajo constituye una referencia importante para el tratamiento de optimización multiobjetivo, dominancia de Pareto y mecanismos de diversidad entre soluciones.
-
----
 
 ## Normalización Min-Max
 
@@ -1687,42 +989,6 @@ Este trabajo constituye una referencia importante para el tratamiento de optimiz
 ```text
 https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.MinMaxScaler.html
 ```
-
-La transformación Min-Max escala cada característica utilizando los valores mínimos y máximos observados.
-
 ---
 
-# 📝 Nota Metodológica
 
-> [!NOTE]
-> La versión mejorada no pretende reproducir exactamente una red de telecomunicaciones real.
->
-> Se trata de un **modelo sintético controlado** diseñado para proporcionar condiciones suficientemente variadas y coherentes para evaluar el comportamiento del algoritmo de optimización.
->
-> Los rangos, distribuciones y relaciones utilizados entre las métricas forman parte del modelo experimental y pueden modificarse posteriormente para evaluar nuevos escenarios.
-
----
-
-<div align="center">
-
-## 🚀 Estado Actual
-
-| Componente                     | Estado          |
-| ------------------------------ | --------------- |
-| Generador original             | ✅ Conservado    |
-| Generador mejorado             | ✅ Implementado  |
-| Semillas reproducibles         | ✅ Implementadas |
-| Modelado de utilización        | ✅ Implementado  |
-| Dataset original               | ✅ Conservado    |
-| Dataset normalizado antiguo    | 📦 Histórico    |
-| Normalización global actual    | ❌ Eliminada     |
-| Dataset mejorado               | ✅ Activo        |
-| Preparado para experimentación | ✅               |
-
-<br>
-
-### Optimización Multiobjetivo de Rutas QoS
-
-**Generación reproducible · Métricas interpretables · Comparación experimental**
-
-</div>
