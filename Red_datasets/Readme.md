@@ -81,6 +81,7 @@ En esta versión también se realizaba una transformación sobre el **ancho de b
 deben minimizarse.
 
 Por esta razón, el ancho de banda era transformado para expresar todos los objetivos bajo un mismo criterio de minimización.
+
 ---
 
 ## Versión Mejorada
