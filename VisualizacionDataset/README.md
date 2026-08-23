@@ -88,9 +88,9 @@ nx.draw(G,pos,with_labels=True,node_size=500 arrows=True)
 
 Todos los nodos utilizaban:
 
-* el mismo tamaño;
-* el mismo color;
-* una etiqueta visible;
+* el mismo tamaño
+* el mismo color
+* una etiqueta visible
 * el mismo nivel de importancia visual.
 
 ---
@@ -189,9 +189,9 @@ Esto no significa que un hub necesariamente forme parte de la mejor ruta.
 
 La calidad final depende también de:
 
-* latencia;
-* jitter;
-* pérdida de paquetes;
+* latencia
+* jitter
+* pérdida de paquetes
 * ancho de banda.
 
 ---
@@ -233,7 +233,7 @@ De esta manera, el color y el tamaño transmiten simultáneamente información s
 
 ---
 
-# 10. Resultado de la versión mejorada
+# 7. Resultado de la versión mejorada
 
 <p align="center">
   <img src="./Mejorada/Red_dataset.png"
@@ -255,7 +255,7 @@ Los principales hubs también aparecen identificados mediante sus etiquetas.
 
 ---
 
-# 11. Nueva visualizacion - Distribución de la conectividad
+# 8. Nueva visualizacion - Distribución de la conectividad
 
 Además de mejorar la topología visual, se desarrolló una segunda herramienta dedicada específicamente a estudiar cómo se distribuyen las conexiones entre los nodos.
 
@@ -286,7 +286,7 @@ estadisticas = {
 
 ---
 
-# 12. Construcción de la distribución
+# 9. Construcción de la distribución
 
 Para determinar cuántos nodos presentan cada número de conexiones se utiliza:
 
@@ -326,7 +326,7 @@ Posteriormente se genera un gráfico de barras.
 
 ---
 
-# 14. Interpretación de la distribución
+# 10. Interpretación de la distribución
 
 La gráfica muestra que la conectividad no se encuentra distribuida uniformemente, la mayor parte de los nodos tiene relativamente pocas conexiones.
 
@@ -338,7 +338,7 @@ Esto coincide con lo observado directamente en la representación de la topolog�
 
 ---
 
-# 18. Conclusión
+# 11. Conclusión
 
 La primera versión cumplía correctamente con su objetivo inicial:
 
