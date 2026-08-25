@@ -222,6 +222,10 @@ class ABCMultiobjetivo:
             # Abejas obreras
             for solucion in self.poblacion:
                 nueva_solucion = self.vecino(solucion)
+
+                if nueva_solucion is None:
+                    continue
+
                 fitness = self.evaluar(nueva_solucion)
 
                 if fitness is None:
@@ -240,10 +244,15 @@ class ABCMultiobjetivo:
                 indice = np.random.choice(len(nueva_poblacion), p=probabilidades)
                 solucion = nueva_poblacion[indice]
                 nueva_solucion = self.vecino(solucion)
+
+                if nueva_solucion is None:
+                    continue
+
                 fitness = self.evaluar(nueva_solucion)
+
                 if fitness is not None:
                     espectadoras.append(nueva_solucion)
-                    self.actualizar_pareto((nueva_solucion,fitness))
+                    self.actualizar_pareto((nueva_solucion, fitness))
 
             # Abejas exploradoras
             exploradoras = []
