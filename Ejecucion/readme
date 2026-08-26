@@ -1,0 +1,375 @@
+# Ejecución y evaluación experimental
+
+Esta carpeta contiene los scripts utilizados para **verificar, ejecutar y evaluar experimentalmente** el algoritmo ABC Multiobjetivo aplicado al problema de enrutamiento con métricas de Calidad de Servicio (QoS).
+
+La implementación del algoritmo se encuentra separada en la carpeta `Algoritmo/`, mientras que los archivos generados durante los experimentos se almacenan en `Resultados/`.
+
+---
+
+## Objetivo
+
+Los scripts de esta carpeta permiten comprobar diferentes aspectos del algoritmo:
+
+- Verificación de la validez de las rutas generadas.
+- Verificación de la correcta estimación de las métricas QoS
+- Validez del frente de Pareto.
+- Comparación con óptimos individuales exactos.
+- Selección del número de iteraciones.
+- Robustez ante diferentes semillas.
+- Reproducibilidad.
+- Construcción de un frente de Pareto de referencia empírico.
+- Comparación ilustrativa entre la versión original y la versión mejorada.
+
+---
+
+## Estructura
+
+```text
+Ejecucion/
+│
+├── Mejorada/
+│   ├── 01_VerificarRutasMetricas.py
+│   ├── 02_VerificarFrentePareto.py
+│   ├── 03_VerificarOptimosExactos.py
+│   ├── 04_ExperimentoIteraciones.py
+│   ├── 05_VisualizarExperimentoIteraciones.py
+│   ├── 06_ExperimentoMultiplesSemillas.py
+│   ├── 07_VerificarReproducibilidad.py
+│   ├── 08_VisualizarMultiplesSemillas.py
+│   ├── 09_ConstruirFrenteReferencia.py
+│   ├── 10_CompararOriginalMejorada.py
+│   └── 11_VisualizarComparacion.py
+│
+└── Original/
+```
+
+Los archivos se encuentran numerados de acuerdo con el orden recomendado de ejecución.
+
+---
+
+# Configuración experimental
+
+La instancia principal utilizada durante las pruebas corresponde a:
+
+| Parámetro | Valor |
+|---|---:|
+| Nodo origen | 52 |
+| Nodo destino | 96 |
+| Número de abejas | 30 |
+| Longitud máxima de ruta | 25 nodos |
+| Tamaño máximo del frente Pareto | 100 |
+| Límite de estancamiento | 60 |
+
+El número definitivo de iteraciones se determina mediante el experimento realizado en `04_ExperimentoIteraciones.py`.
+
+---
+
+# 01. Verificación de rutas y métricas
+
+```text
+01_VerificarRutasMetricas.py
+```
+
+Este script realiza una comprobación independiente de las soluciones obtenidas por el algoritmo.
+
+Se verifica que cada ruta:
+
+- inicie en el nodo origen
+- termine en el nodo destino
+- contenga únicamente enlaces existentes
+- no tenga ciclos
+- respete la longitud máxima permitida
+
+Además, las métricas QoS son recalculadas de manera independiente:
+
+- Latencia
+- Pérdida de paquetes
+- Jitter
+- Ancho de banda
+
+El objetivo es comprobar que los valores almacenados por el algoritmo coincidan con los valores calculados directamente a partir del grafo.
+
+Los resultados de esta prueba se almacenan en:
+
+```text
+Resultados/Mejorada/01_Verificacion/
+```
+
+---
+
+# 02. Verificación del frente de Pareto
+
+```text
+02_VerificarFrentePareto.py
+```
+
+Este script comprueba que el frente obtenido cumpla correctamente con el concepto de dominancia de Pareto.
+
+Se buscan:
+
+- soluciones dominadas
+- rutas duplicadas
+- vectores de objetivos duplicados
+
+Una solución pertenece al frente únicamente cuando ninguna otra solución es mejor o igual en todos los objetivos y estrictamente mejor en al menos uno.
+
+---
+
+# 03. Obtención de óptimos individuales exactos
+
+```text
+03_VerificarOptimosExactos.py
+```
+
+Este archivo calcula valores exactos de referencia para cada objetivo de manera independiente:
+
+```text
+Menor latencia
+Menor pérdida
+Menor jitter
+Mayor ancho de banda
+```
+
+Posteriormente se comparan estos valores contra las mejores soluciones encontradas por ABC.
+
+> Los valores obtenidos representan óptimos individuales de cada objetivo y no un frente de Pareto exacto completo.
+
+Estos valores se utilizan posteriormente para calcular el **gap respecto al óptimo**.
+
+---
+
+# 04. Experimento de número de iteraciones
+
+```text
+04_ExperimentoIteraciones.py
+```
+
+El objetivo de este experimento es determinar una cantidad adecuada de iteraciones para la configuración final.
+
+Se analizan:
+
+```text
+25
+50
+100
+150
+250
+400
+```
+
+iteraciones.
+
+Cada configuración se ejecuta utilizando varias semillas para evitar seleccionar el número de iteraciones a partir de una única ejecución favorable.
+
+Durante cada corrida se almacenan indicadores como:
+
+- tiempo de ejecución
+- tamaño del frente Pareto
+- diversidad
+- mejores valores por objetivo
+- gap respecto a los óptimos exactos
+- éxito por objetivo
+
+Los archivos se almacenan en:
+
+```text
+Resultados/Mejorada/02_ExperimentoIteraciones/
+```
+
+---
+
+# 05. Visualización del experimento de iteraciones
+
+```text
+05_VisualizarExperimentoIteraciones.py
+```
+
+Este script genera las gráficas correspondientes al experimento anterior.
+
+Las visualizaciones permiten analizar:
+
+- tasa de éxito
+- tiempo promedio
+- tamaño promedio del frente Pareto
+- diversidad
+- éxito individual por objetivo
+
+Estas gráficas se utilizan para seleccionar la configuración definitiva del algoritmo.
+
+---
+
+# 06. Experimento con múltiples semillas
+
+```text
+06_ExperimentoMultiplesSemillas.py
+```
+
+Una vez determinada la configuración final, el algoritmo se ejecuta utilizando:
+
+```text
+Seeds = 1 ... 30
+```
+
+El objetivo es comprobar que el comportamiento del algoritmo no dependa únicamente de una semilla determinada.
+
+Para cada seed se almacena:
+
+```text
+FrentePareto.csv
+HistorialABC.csv
+```
+
+Además, se genera un resumen global de las ejecuciones.
+
+Los resultados se almacenan en:
+
+```text
+Resultados/Mejorada/03_MultiplesSemillas/
+```
+
+---
+
+# 07. Verificación de reproducibilidad
+
+```text
+07_VerificarReproducibilidad.py
+```
+
+Este script ejecuta dos veces el algoritmo utilizando exactamente la misma configuración y la misma semilla.
+
+Se comparan:
+
+- frente de Pareto
+- historial
+- población final
+
+El objetivo es verificar que una misma semilla produzca nuevamente los mismos resultados.
+
+Los archivos generados se almacenan en:
+
+```text
+Resultados/Mejorada/04_Reproducibilidad/
+```
+
+---
+
+# 08. Visualización de múltiples semillas
+
+```text
+08_VisualizarMultiplesSemillas.py
+```
+
+Este archivo genera representaciones gráficas de los resultados obtenidos con las 30 semillas.
+
+Se visualizan:
+
+```text
+Tasa de éxito por objetivo
+Tamaño del frente Pareto por seed
+Gap de ancho de banda
+```
+
+Esto permite observar de manera gráfica la estabilidad del algoritmo entre diferentes ejecuciones.
+
+---
+
+# 09. Construcción del frente de referencia empírico
+
+```text
+09_ConstruirFrenteReferencia.py
+```
+
+Cada seed puede producir un conjunto ligeramente diferente de soluciones no dominadas.
+
+Para obtener una referencia global se combinan los frentes de las 30 ejecuciones.
+
+El procedimiento es:
+
+1. Frentes de las 30 seeds
+2. Combinar soluciones
+3. Eliminar duplicados
+4. Comprobar dominancia global
+5. Eliminar soluciones dominadas
+6. Frente de referencia empírico
+
+El resultado se almacena en:
+
+```text
+Resultados/Mejorada/05_FrenteReferencia/
+```
+
+> Este conjunto se denomina frente de Pareto de referencia **empírico**, debido a que se construye a partir de las soluciones encontradas experimentalmente.
+
+---
+
+# 10. Comparación Original vs Mejorada
+
+```text
+10_CompararOriginalMejorada.py
+```
+
+Este experimento realiza una comparación ilustrativa entre ambas implementaciones.
+
+Se utiliza la misma configuración:
+
+```text
+Origen:       52
+Destino:      96
+Abejas:       30
+Iteraciones:  250
+Seed:         42
+```
+
+Debido a que la versión original empleaba definiciones diferentes para algunas métricas QoS, las rutas encontradas por ambas versiones se vuelven a evaluar mediante una función externa común.
+
+Para ambas se utiliza:
+
+```text
+Latencia       → suma de los enlaces
+Pérdida        → probabilidad extremo a extremo
+Jitter         → suma de los enlaces
+Ancho de banda → cuello de botella
+```
+
+De esta manera las rutas pueden compararse utilizando exactamente los mismos criterios.
+
+Los resultados se almacenan en:
+
+```text
+Resultados/ComparacionOriginalMejorada/
+```
+---
+
+# 11. Visualización de la comparación
+
+```text
+11_VisualizarComparacion.py
+```
+
+Este script genera gráficas que permiten comparar visualmente ambas implementaciones.
+
+Se generan:
+
+```text
+01_ComparacionGaps.png
+02_ComparacionPareto.png
+03_ComparacionTiempo.png
+```
+
+Las visualizaciones muestran:
+
+- distancia respecto a los óptimos exactos;
+- cantidad de soluciones no dominadas;
+- tiempo de ejecución.
+
+---
+
+## Resultado
+
+Esta carpeta permite reproducir de forma ordenada el proceso utilizado para verificar y evaluar la versión mejorada del algoritmo ABC Multiobjetivo.
+
+Los resultados numéricos e interpretaciones obtenidas durante estas ejecuciones se documentan por separado en:
+
+```text
+Resultados/README.md
+```
