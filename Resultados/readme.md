@@ -1,4 +1,4 @@
-# Resultados experimentales
+# Resultados
 
 Esta carpeta contiene los resultados obtenidos durante la evaluación de la versión mejorada del algoritmo **Artificial Bee Colony (ABC) Multiobjetivo** aplicado al problema de optimización de rutas con métricas de Calidad de Servicio (QoS).
 
