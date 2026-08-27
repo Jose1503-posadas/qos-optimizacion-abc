@@ -27,6 +27,7 @@ Resultados/
 │
 └── ComparacionOriginalMejorada/
     └── Visualizaciones/
+```
 
 Los resultados se encuentran organizados de acuerdo con las diferentes etapas del proceso experimental.
 
