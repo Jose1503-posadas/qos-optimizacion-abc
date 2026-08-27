@@ -1,0 +1,7 @@
+Par,Origen,Destino,SaltosMinimos,GradoSalidaOrigen,GradoEntradaDestino,Tipo
+P01,52,96,3,4,4,Referencia
+P02,7,59,2,29,5,Adicional
+P03,81,25,4,4,12,Adicional
+P04,22,92,2,7,4,Adicional
+P05,46,26,3,6,5,Adicional
+P06,94,63,4,4,4,Adicional

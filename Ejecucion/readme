@@ -11,7 +11,7 @@ La implementación del algoritmo se encuentra separada en la carpeta `Algoritmo/
 Los scripts de esta carpeta permiten comprobar diferentes aspectos del algoritmo:
 
 - Verificación de la validez de las rutas generadas.
-- Verificación de la correcta estimación de las métricas QoS
+- Verificación de la correcta estimación de las métricas QoS.
 - Validez del frente de Pareto.
 - Comparación con óptimos individuales exactos.
 - Selección del número de iteraciones.
@@ -19,8 +19,10 @@ Los scripts de esta carpeta permiten comprobar diferentes aspectos del algoritmo
 - Reproducibilidad.
 - Construcción de un frente de Pareto de referencia empírico.
 - Comparación ilustrativa entre la versión original y la versión mejorada.
-
+- Evaluación del algoritmo con diferentes pares origen-destino.
 ---
+
+## Estructura
 
 ## Estructura
 
@@ -38,12 +40,11 @@ Ejecucion/
 │   ├── 08_VisualizarMultiplesSemillas.py
 │   ├── 09_ConstruirFrenteReferencia.py
 │   ├── 10_CompararOriginalMejorada.py
-│   └── 11_VisualizarComparacion.py
+│   ├── 11_VisualizarComparacion.py
+│   └── 12_ExperimentoMultiplesPares.py
 │
 └── Original/
 ```
-
-Los archivos se encuentran numerados de acuerdo con el orden recomendado de ejecución.
 
 ---
 
@@ -360,9 +361,36 @@ Las visualizaciones muestran:
 
 - distancia respecto a los óptimos exactos;
 - cantidad de soluciones no dominadas;
-- tiempo de ejecución.
+- tiempo de ejecución.## Objetivo
 
 ---
+
+# 12. Experimento con múltiples pares origen-destino
+
+Este script amplía la evaluación del algoritmo utilizando diferentes pares origen-destino dentro de la misma topología.
+
+Se seleccionan seis pares de nodos y, para cada uno, se realizan 10 ejecuciones con diferentes semillas, manteniendo la configuración principal de 30 abejas y 250 iteraciones.
+
+Antes de ejecutar el algoritmo se calculan los óptimos individuales de referencia para latencia, pérdida de paquetes, jitter y ancho de banda. Posteriormente, las soluciones obtenidas por ABC se comparan con estos valores.
+
+Durante cada ejecución se registran:
+
+tamaño del frente de Pareto
+diversidad de las rutas
+tiempo de ejecución
+gap respecto a los óptimos individuales
+cantidad de óptimos alcanzados
+éxito completo de la ejecución
+
+En total se realizan:
+
+6 pares × 10 semillas = 60 ejecuciones
+
+Los resultados se almacenan en:
+
+Resultados/Mejorada/05_MultiplesPares/
+
+Este experimento permite observar si el comportamiento obtenido con el par principal 52 → 96 también se mantiene en otros escenarios de enrutamiento.
 
 ## Resultado
 
