@@ -9,9 +9,9 @@ Este proyecto implementa un algoritmo de optimización multiobjetivo basado en *
 La red se representa mediante un grafo dirigido donde:
 
 ```text
-Nodos   → dispositivos o puntos de comunicación
+Nodos   → dispositivos
 Aristas → enlaces de comunicación
-Ruta    → solución candidata
+Ruta    → solución posible
 ```
 
 Cada enlace contiene información relacionada con:
@@ -24,26 +24,6 @@ Cada enlace contiene información relacionada con:
 Debido a que estos objetivos pueden entrar en conflicto, el algoritmo no busca una única solución óptima.
 
 En su lugar construye un **frente de Pareto**, formado por diferentes rutas no dominadas que representan compromisos entre las métricas QoS.
-
----
-
-# Autores
-
-### José Alberto Posadas Gudiño
-
-Universidad Autónoma Metropolitana  
-Unidad Cuajimalpa
-
-### Dr. Edwin Montes Orozco
-
-Departamento de Ingeniería
-
-### Dr. Abel García Nájera
-
-Departamento de Matemáticas Aplicadas y Sistemas
-
-Universidad Autónoma Metropolitana  
-Unidad Cuajimalpa
 
 ---
 
@@ -203,9 +183,7 @@ Esto permite comparar métricas con escalas diferentes durante la búsqueda sin 
 
 # Algoritmo Artificial Bee Colony
 
-El algoritmo se basa en el comportamiento de una colonia artificial de abejas.
-
-Se utilizan tres tipos principales de agentes.
+El algoritmo se basa en el comportamiento de una colonia artificial de abejas. Se utilizan tres tipos principales:
 
 ---
 
@@ -216,9 +194,9 @@ Las abejas obreras mantienen soluciones actuales y exploran rutas vecinas.
 La versión mejorada incorpora operadores diseñados específicamente para modificar rutas de red:
 
 ```text
-Desvío de sufijo
-Reemplazo de segmento
-Atajo
+- Desvío de sufijo
+- Reemplazo de segmento
+- Atajo
 ```
 
 Estos operadores permiten generar nuevas rutas manteniendo su validez y evitando ciclos.
@@ -240,9 +218,7 @@ Esto permite favorecer soluciones de calidad sin concentrar completamente la bú
 
 ## Abejas exploradoras
 
-Cada solución mantiene un contador de intentos sin mejora.
-
-Cuando una abeja permanece estancada durante suficientes intentos, su ruta puede ser reemplazada por una nueva solución.
+Cada solución mantiene un contador de intentos sin mejora. Cuando una abeja permanece estancada durante suficientes intentos, su ruta puede ser reemplazada por una nueva solución.
 
 Esto permite introducir diversidad y explorar nuevas regiones del espacio de búsqueda.
 
@@ -305,6 +281,7 @@ qos-optimizacion-abc/
 │   │   ├── 09_ConstruirFrenteReferencia.py
 │   │   ├── 10_CompararOriginalMejorada.py
 │   │   └── 11_VisualizarComparacion.py
+|   |   └── 12_ExperimentoMultiplesPares.py
 │   │
 │   └── README.md
 │
@@ -332,13 +309,15 @@ qos-optimizacion-abc/
 └── README.md
 ```
 
+# Documentación y guía del proyecto
+
+El proyecto se encuentra dividido en distintas secciones, cada una acompañada de su propia documentación.El objetivo de estos archivos `README` no es únicamente describir el contenido de las carpetas, sino también explicar el proceso seguido durante el desarrollo del proyecto, desde la generación de la red hasta la ejecución y evaluación del algoritmo ABC.
+
+De esta manera se puede consultar únicamente la sección que se necesite o seguir la documentación en orden para comprender el funcionamiento completo del proyecto.
+
 ---
 
-# Documentación del proyecto
-
-Cada sección cuenta con documentación específica.
-
-### Implementación
+### Implementación del algoritmo
 
 ```text
 Algoritmo/README.md
@@ -346,13 +325,13 @@ Algoritmo/README.md
 
 Explica:
 
-- funcionamiento del ABC;
-- evaluación QoS;
-- generación de rutas;
-- operadores de vecindario;
-- selección;
-- crowding;
-- frente de Pareto;
+- funcionamiento del ABC
+- evaluación QoS
+- generación de rutas
+- operadores de vecindario
+- selección
+- crowding
+- frente de Pareto
 - mejoras respecto a la implementación inicial.
 
 ---
@@ -365,11 +344,11 @@ Ejecucion/README.md
 
 Describe:
 
-- objetivo de cada experimento;
-- orden de ejecución;
-- archivos utilizados;
-- configuración experimental;
-- archivos generados.
+- objetivo de cada experimento
+- orden de ejecución
+- archivos utilizados
+- configuración experimental
+- archivos generados
 
 ---
 
@@ -381,12 +360,12 @@ Resultados/README.md
 
 Contiene:
 
-- resultados numéricos;
-- tablas;
-- gráficas;
-- interpretación de los experimentos;
-- comparación entre versiones;
-- conclusiones experimentales.
+- resultados numéricos
+- tablas
+- gráficas
+- interpretación de los experimentos
+- comparación entre versiones
+- conclusiones experimentales
 
 ---
 
@@ -395,34 +374,16 @@ Contiene:
 El proyecto utiliza:
 
 ```text
-Python 3
-NetworkX
-NumPy
-Pandas
-Matplotlib
+- Python 3
+- NetworkX
+- NumPy
+- Pandas
+- Matplotlib
 ```
 
 Las dependencias pueden instalarse mediante:
 
 ```bash
-pip install networkx numpy pandas matplotlib
-```
-
-También puede utilizarse un entorno virtual.
-
-### Windows / PowerShell
-
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install networkx numpy pandas matplotlib
-```
-
-### Linux / macOS
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
 pip install networkx numpy pandas matplotlib
 ```
 
@@ -464,18 +425,6 @@ Esta es la opción recomendada para **reproducir los resultados del proyecto**.
 
 También es posible generar una nueva topología y sus métricas QoS utilizando los scripts correspondientes de generación del dataset.
 
-Al utilizar una nueva red:
-
-```text
-los valores óptimos,
-los frentes Pareto,
-las rutas,
-los tiempos
-y las tasas de éxito
-```
-
-pueden cambiar respecto a los resultados documentados en este repositorio.
-
 Los experimentos presentados en `Resultados/` corresponden específicamente al dataset incluido en el proyecto.
 
 ---
@@ -492,13 +441,11 @@ contiene los scripts utilizados para representar gráficamente la red.
 
 La visualización permite observar:
 
-- nodos;
-- enlaces;
-- dirección de las conexiones;
-- nodos con mayor grado;
-- estructura general de la topología.
-
-La visualización es opcional y no modifica el funcionamiento del algoritmo.
+- nodos
+- enlaces
+- dirección de las conexiones
+- nodos con mayor grado
+- estructura general de la topología
 
 ---
 
@@ -517,11 +464,11 @@ python Ejecucion/Mejorada/01_VerificarRutasMetricas.py
 Comprueba independientemente:
 
 ```text
-Validez de las rutas
-Latencia
-Pérdida
-Jitter
-Ancho de banda
+- Validez de las rutas
+- Latencia
+- Pérdida
+- Jitter
+- Ancho de banda
 ```
 
 ---
@@ -535,9 +482,9 @@ python Ejecucion/Mejorada/02_VerificarFrentePareto.py
 Comprueba:
 
 ```text
-Soluciones dominadas
-Rutas duplicadas
-Objetivos duplicados
+- Soluciones dominadas
+- Rutas duplicadas
+- Objetivos duplicados
 ```
 
 ---
@@ -551,10 +498,10 @@ python Ejecucion/Mejorada/03_VerificarOptimosExactos.py
 Obtiene referencias exactas para:
 
 ```text
-Latencia
-Pérdida
-Jitter
-Ancho de banda
+- Latencia
+- Pérdida
+- Jitter
+-- Ancho de banda
 ```
 
 Estos valores se utilizan posteriormente para calcular el gap de las soluciones encontradas.
@@ -570,12 +517,7 @@ python Ejecucion/Mejorada/04_ExperimentoIteraciones.py
 Se prueban:
 
 ```text
-25
-50
-100
-150
-250
-400
+25, 50, 100, 150, 250, 400
 ```
 
 iteraciones utilizando diferentes semillas.
@@ -591,11 +533,11 @@ python Ejecucion/Mejorada/05_VisualizarExperimentoIteraciones.py
 Genera gráficas relacionadas con:
 
 ```text
-Éxito completo
-Tiempo promedio
-Tamaño del Pareto
-Diversidad
-Éxito por objetivo
+- Éxito completo
+- Tiempo promedio
+- Tamaño del Pareto
+- Diversidad
+- Éxito por objetivo
 ```
 
 ---
@@ -647,9 +589,9 @@ python Ejecucion/Mejorada/08_VisualizarMultiplesSemillas.py
 Genera:
 
 ```text
-Éxito por objetivo
-Tamaño Pareto por seed
-Gap de ancho de banda
+- Éxito por objetivo
+- Tamaño Pareto por seed
+- Gap de ancho de banda
 ```
 
 ---
@@ -693,287 +635,21 @@ python Ejecucion/Mejorada/11_VisualizarComparacion.py
 Genera:
 
 ```text
-Comparación de gaps
-Comparación del tamaño Pareto
-Comparación del tiempo
+-Comparación de gaps
+- Comparación del tamaño Pareto
+- Comparación del tiempo
 ```
 
----
+##
 
-# Flujo completo de ejecución
+## 12. Experimento con múltiples pares origen–destino
 
-```text
-Dataset QoS
-    │
-    ▼
-Verificación de rutas y métricas
-    │
-    ▼
-Verificación del frente Pareto
-    │
-    ▼
-Obtención de óptimos individuales
-    │
-    ▼
-Experimento de iteraciones
-    │
-    ▼
-Selección de 250 iteraciones
-    │
-    ▼
-30 ejecuciones con diferentes seeds
-    │
-    ▼
-Análisis de robustez
-    │
-    ▼
-Prueba de reproducibilidad
-    │
-    ▼
-Frente de referencia empírico
-    │
-    ▼
-Comparación Original vs Mejorada
-    │
-    ▼
-Resultados y conclusiones
+```powershell
+python Ejecucion/Mejorada/12_ExperimentoMultiplesPares.py
 ```
 
----
+Este experimento evalúa el comportamiento del algoritmo sobre distintos pares origen–destino de la red.
 
-# Configuración final evaluada
-
-Después del experimento de iteraciones se utilizó:
-
-| Parámetro | Valor |
-|---|---:|
-| Origen | 52 |
-| Destino | 96 |
-| Abejas | 30 |
-| Iteraciones | 250 |
-| Tamaño máximo Pareto | 100 |
-| Longitud máxima | 25 nodos |
-| Límite de estancamiento | 60 |
-
----
-
-# Resultados principales
-
-La configuración final fue evaluada utilizando 30 semillas diferentes.
-
-### Tasa de éxito
-
-| Objetivo | Resultado |
-|---|---:|
-| Latencia | 100 % |
-| Pérdida | 100 % |
-| Jitter | 100 % |
-| Ancho de banda | 96.67 % |
-| Éxito completo | 96.67 % |
-
-Esto significa que en:
-
-```text
-29 de las 30 ejecuciones
-```
-
-se alcanzaron simultáneamente los cuatro óptimos individuales utilizados como referencia.
-
----
-
-## Resultados entre semillas
-
-Se obtuvo:
-
-```text
-Pareto promedio:     33.5 soluciones
-Diversidad promedio: 0.9258
-Tiempo promedio:     60.51 s
-```
-
-El tamaño de los frentes permaneció aproximadamente entre:
-
-```text
-30 y 37 soluciones
-```
-
-lo que muestra un comportamiento relativamente estable entre ejecuciones.
-
----
-
-## Gap de ancho de banda
-
-En 29 de las 30 semillas:
-
-```text
-Gap = 0 %
-```
-
-Únicamente la seed 24 presentó un gap aproximado de:
-
-```text
-1.16 %
-```
-
-Esto significa que incluso en la única ejecución que no alcanzó exactamente el óptimo de ancho de banda, el valor obtenido permaneció cercano a la referencia.
-
----
-
-# Visualización de resultados entre semillas
-
-<p align="center">
-  <img src="Resultados/Mejorada/03_MultiplesSemillas/Visualizaciones/01_ExitoPorObjetivo.png" width="700">
-</p>
-
-La gráfica muestra que latencia, pérdida y jitter alcanzaron sus óptimos en todas las ejecuciones, mientras que el ancho de banda alcanzó un éxito de `96.67 %`.
-
----
-
-<p align="center">
-  <img src="Resultados/Mejorada/03_MultiplesSemillas/Visualizaciones/02_ParetoPorSeed.png" width="800">
-</p>
-
-El tamaño del frente se mantuvo relativamente estable entre las diferentes semillas, con una media de `33.5` soluciones.
-
----
-
-# Frente de Pareto de referencia empírico
-
-Al combinar los frentes de las 30 ejecuciones se obtuvieron:
-
-| Indicador | Resultado |
-|---|---:|
-| Soluciones combinadas | 1005 |
-| Soluciones únicas | 44 |
-| Soluciones no dominadas globales | 40 |
-| Soluciones dominadas eliminadas | 4 |
-
-El proceso puede resumirse como:
-
-```text
-1005 apariciones
-      ↓
-44 soluciones diferentes
-      ↓
-40 soluciones globalmente no dominadas
-```
-
-La recurrencia de las mismas soluciones en diferentes semillas proporciona evidencia adicional sobre la estabilidad del algoritmo.
-
----
-
-# Reproducibilidad
-
-Dos ejecuciones realizadas con:
-
-```text
-Seed = 42
-```
-
-produjeron:
-
-```text
-Frente Pareto idéntico
-Historial idéntico
-Población final idéntica
-```
-
-Por lo tanto:
-
-```text
-RESULTADO: EJECUCIÓN REPRODUCIBLE
-```
-
----
-
-# Comparación ilustrativa Original vs Mejorada
-
-La comparación utilizando la seed 42 produjo:
-
-| Métrica | Gap Original | Gap Mejorada |
-|---|---:|---:|
-| Latencia | 22.42 % | 0 % |
-| Pérdida | 0 % | 0 % |
-| Jitter | 18.14 % | 0 % |
-| Ancho de banda | 53.38 % | 0 % |
-
-Además:
-
-| Versión | Soluciones no dominadas | Tiempo |
-|---|---:|---:|
-| Original | 12 | 113.48 s |
-| Mejorada | 33 | 61.96 s |
-
----
-
-<p align="center">
-  <img src="Resultados/ComparacionOriginalMejorada/Visualizaciones/01_ComparacionGaps.png" width="800">
-</p>
-
-En la ejecución analizada, la versión mejorada alcanzó los cuatro óptimos individuales, mientras que la versión original únicamente alcanzó exactamente el óptimo de pérdida.
-
----
-
-<p align="center">
-  <img src="Resultados/ComparacionOriginalMejorada/Visualizaciones/02_ComparacionPareto.png" width="650">
-</p>
-
-La versión mejorada produjo un conjunto mayor de soluciones no dominadas durante la comparación realizada.
-
-> Esta comparación utiliza una única semilla y tiene un propósito ilustrativo. No representa una comparación estadística completa entre ambas implementaciones.
-
----
-
-# Interpretación general de los resultados
-
-Los diferentes experimentos evalúan propiedades distintas del algoritmo:
-
-| Resultado | Interpretación |
-|---|---|
-| 30/30 métricas verificadas | Correctitud de la implementación |
-| 0 soluciones dominadas | Correcta gestión del Pareto |
-| 250 iteraciones seleccionadas | Equilibrio entre calidad y costo |
-| 96.67 % de éxito completo | Robustez frente a la aleatoriedad |
-| Gap máximo observado de ~1.16 % | Buena aproximación incluso sin alcanzar el óptimo |
-| Pareto promedio de 33.5 | Múltiples soluciones de compromiso |
-| Diversidad de 0.9258 | Rutas estructuralmente diferentes |
-| Misma seed → mismo resultado | Reproducibilidad |
-| 44 únicas de 1005 apariciones | Recurrencia de soluciones entre seeds |
-| 40 soluciones de referencia | Conjunto global no dominado encontrado |
-
----
-
-# Conclusión
-
-Los experimentos realizados muestran que la versión mejorada del algoritmo ABC Multiobjetivo es capaz de generar de manera consistente rutas de alta calidad para el problema de optimización QoS.
-
-La evaluación con múltiples semillas permitió comprobar que los resultados no dependen únicamente de una ejecución favorable. En `29 de 30` corridas se alcanzaron simultáneamente los cuatro óptimos individuales utilizados como referencia.
-
-Además, el algoritmo mantuvo una diversidad elevada y tamaños de frente Pareto similares entre las diferentes ejecuciones, indicando que la búsqueda conserva múltiples alternativas de solución sin concentrarse únicamente en una ruta.
-
-La prueba de reproducibilidad confirmó que una misma configuración y semilla producen nuevamente los mismos resultados, mientras que el frente de referencia empírico mostró una alta recurrencia de soluciones entre diferentes semillas.
-
-En conjunto, los resultados proporcionan evidencia experimental sobre la:
-
-```text
-Correctitud
-    +
-Calidad
-    +
-Diversidad
-    +
-Robustez
-    +
-Reproducibilidad
-```
-
-de la versión final del algoritmo ABC Multiobjetivo.
-
-Para consultar el análisis completo de los resultados:
-
-```text
-Resultados/README.md
-```
 
 ---
 
@@ -984,3 +660,7 @@ Este repositorio forma parte del trabajo:
 **“Optimización de la Calidad de Servicio (QoS) en Redes de Telecomunicaciones mediante el Algoritmo de Colonia de Abejas Artificiales”**
 
 ---
+
+
+Departamento de Computación, Electrónica y Mecatrónica
+Universidad de las Américas Puebla

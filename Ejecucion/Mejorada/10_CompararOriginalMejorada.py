@@ -3,7 +3,6 @@ import math
 import random
 import sys
 import time
-
 import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
@@ -12,19 +11,13 @@ import pandas as pd
 BASE_DIR = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(BASE_DIR))
 
-# Cambia únicamente esta línea si tu archivo original tiene otro nombre.
 from Algoritmo.Original.AlgoritmoABC import ABCMultiobjetivo as ABCOriginal
 from Algoritmo.Mejorada.AlgoritmoABC import ABCMultiobjetivo as ABCMejorada
 
+DATASET = BASE_DIR/"Red_datasets"/"Mejorada"/"DatasetRed.csv"
+OPTIMOS = BASE_DIR/"Resultados"/"Mejorada"/"01_Verificacion"/"OptimosExactos.csv"
 
-# ============================================================
-# CONFIGURACIÓN
-# ============================================================
-
-DATASET = BASE_DIR / "Red_datasets" / "Mejorada" / "DatasetRed.csv"
-OPTIMOS = BASE_DIR / "Resultados" / "Mejorada" / "01_Verificacion" / "OptimosExactos.csv"
-
-OUTPUT_DIR = BASE_DIR / "Resultados" / "ComparacionOriginalMejorada"
+OUTPUT_DIR = BASE_DIR/"Resultados"/"ComparacionOriginalMejorada"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 ORIGEN, DESTINO = 52, 96
@@ -100,16 +93,13 @@ def reevaluar_frente(G, frente):
     """Ignora el fitness interno y vuelve a evaluar únicamente las rutas."""
 
     filas, vistas = [], set()
-
     for ruta, _ in frente:
         clave = tuple(ruta)
-
         if clave in vistas or not ruta_valida(G, ruta):
             continue
 
         vistas.add(clave)
         lat, perdida, jitter, bw = evaluar_externo(G, ruta)
-
         filas.append({
             "Ruta": "->".join(map(str, ruta)),
             "Saltos": len(ruta) - 1,
@@ -137,7 +127,6 @@ def ejecutar_original(G):
     # La versión original usa los generadores globales.
     random.seed(SEED)
     np.random.seed(SEED)
-
     inicio = time.perf_counter()
     abc = ABCOriginal(G, ORIGEN, DESTINO, NUM_ABEJAS, ITERACIONES)
     frente = abc.ejecutar()
@@ -178,8 +167,8 @@ def mejores_resultados(df):
 
 def calcular_gap(valor, optimo, maximizar=False):
     if maximizar:
-        return max(0.0, (optimo - valor) / optimo * 100)
-    return max(0.0, (valor - optimo) / optimo * 100)
+        return max(0.0, (optimo - valor)/optimo * 100)
+    return max(0.0, (valor - optimo)/optimo * 100)
 
 
 def comparar(df_original, df_mejorada, optimos, tiempo_original, tiempo_mejorada):
@@ -246,15 +235,8 @@ def main():
     G = cargar_grafo(DATASET)
     optimos = cargar_optimos()
 
-    print("=" * 70)
-    print("COMPARACIÓN ILUSTRATIVA - ORIGINAL VS MEJORADA")
-    print("=" * 70)
-    print(f"Seed: {SEED} | Abejas: {NUM_ABEJAS} | Iteraciones: {ITERACIONES}\n")
-
-    print("Ejecutando versión original...")
+    #ejecutar versiones
     frente_original, tiempo_original = ejecutar_original(G)
-
-    print("Ejecutando versión mejorada...")
     frente_mejorada, tiempo_mejorada = ejecutar_mejorada(G)
 
     externo_original = reevaluar_frente(G, frente_original)
@@ -275,10 +257,6 @@ def main():
 
     graficar_gaps(comparacion)
 
-    print("\n" + "=" * 70)
-    print("RESULTADOS")
-    print("=" * 70)
-
     for _, r in comparacion.iterrows():
         print(
             f"{r['Metrica']:<12} | "
@@ -288,8 +266,6 @@ def main():
 
     print()
     print(resumen.to_string(index=False))
-    print(f"\nArchivos guardados en:\n{OUTPUT_DIR}")
-
 
 if __name__ == "__main__":
     main()

@@ -9,7 +9,7 @@ ARCHIVO_DOMINANCIAS = DIR_VERIFICACION/"DominanciasEncontradas.csv"
 TOLERANCIA = 1e-12
 
 def domina(a, b, eps=TOLERANCIA):
-    """Comprueba dominancia Pareto: latencia, pérdida y jitter ↓; ancho de banda ↑."""
+    """Comprueba dominancia Pareto: latencia, pérdida y jitter ancho de banda"""
 
     no_peor = (a["LatenciaABC"] <= b["LatenciaABC"] + eps and a["PerdidaABC"] <= b["PerdidaABC"] + eps and a["JitterABC"] <= b["JitterABC"] + eps and a["AnchoBandaABC"] >= b["AnchoBandaABC"] - eps)
     mejor = (a["LatenciaABC"] < b["LatenciaABC"] - eps or a["PerdidaABC"] < b["PerdidaABC"] - eps or a["JitterABC"] < b["JitterABC"] - eps or a["AnchoBandaABC"] > b["AnchoBandaABC"] + eps)
@@ -66,7 +66,7 @@ def mostrar_resumen(resultado, dominancias):
     if correcto:
         print("\nResultado: Frente")
     else:
-        print("\nRESULTADO: SE ENCONTRARON INCONSISTENCIAS.")
+        print("\nse encontraron inconsitencias.")
 
         if dominadas:
             print("\nDominancias encontradas:")

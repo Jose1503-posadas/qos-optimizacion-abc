@@ -1,9 +1,5 @@
 # Optimización Multiobjetivo de QoS mediante Artificial Bee Colony
 
-## Descripción
-
-Este módulo contiene la versión mejorada del algoritmo **Artificial Bee Colony (ABC) Multiobjetivo** utilizado para encontrar rutas de comunicación eficientes dentro de una red de telecomunicaciones.
-
 El problema se aborda como una optimización multiobjetivo, donde cada ruta debe considerar simultáneamente cuatro métricas de Calidad de Servicio (**QoS**):
 
 | Métrica | Objetivo |
@@ -131,9 +127,9 @@ metricas = abc.fitness_para_mostrar(fitness)
 
 La versión mejorada utiliza normalización Min-Max para comparar las métricas durante la **construcción y modificación de rutas**.
 
-\[
+$$
 x'=\frac{x-x_{min}}{x_{max}-x_{min}}
-\]
+$$
 
 > **Importante:** la normalización no se utiliza para calcular el frente de Pareto.
 
@@ -147,44 +143,38 @@ Esto evita que una métrica domine la construcción de rutas únicamente por man
 
 El algoritmo conserva los tres tipos principales de abejas del modelo Artificial Bee Colony:
 
-## 🐝 Abejas obreras
+## Abejas obreras
 
 Cada abeja obrera mantiene una ruta y genera una solución vecina.
 
 La nueva solución puede reemplazar a la actual cuando:
 
-- domina a la solución existente;
-- aporta mayor diversidad al espacio objetivo;
-- o es aceptada ocasionalmente como movimiento exploratorio.
+- domina a la solución existente
+- aporta mayor diversidad al espacio objetivo
+- Es aceptada ocasionalmente como movimiento exploratorio.
 
 Esto permite mantener un equilibrio entre **explotación y exploración**.
 
 ---
 
-## 🐝 Abejas espectadoras
+## Abejas espectadoras
 
 Las abejas espectadoras seleccionan soluciones de la población mediante una estrategia basada en:
 
-- nivel de dominancia;
-- frente no dominado al que pertenece la solución;
-- distancia de crowding;
-- exploración probabilística.
+- nivel de dominancia
+- frente no dominado al que pertenece la solución
+- distancia de crowding
+- exploración probabilística
 
 Las soluciones con mejor calidad tienen mayor probabilidad de ser seleccionadas, sin eliminar completamente la posibilidad de explorar otras regiones.
 
 ---
 
-## 🐝 Abejas exploradoras
+## Abejas exploradoras
 
 Cada solución mantiene un contador de intentos sin mejora.
 
-Cuando una abeja supera un límite determinado:
-
-```text
-LIMITE
-```
-
-su ruta puede ser reemplazada por una nueva solución generada desde cero.
+Cuando una abeja supera un límite determinado, su ruta puede ser reemplazada por una nueva solución generada desde cero.
 
 Esto permite abandonar regiones estancadas del espacio de búsqueda.
 
@@ -197,12 +187,12 @@ La construcción de rutas combina búsqueda guiada por QoS y exploración aleato
 Para evitar generar soluciones inválidas se consideran varias restricciones:
 
 ```text
-✓ La ruta inicia en el nodo origen
-✓ La ruta termina en el nodo destino
-✓ Todos los enlaces deben existir
-✓ No se permiten ciclos
-✓ No se permiten nodos repetidos
-✓ Se respeta una longitud máxima
+- La ruta inicia en el nodo origen
+- La ruta termina en el nodo destino
+- Todos los enlaces deben existir
+- No se permiten ciclos
+- No se permiten nodos repetidos
+- Se respeta una longitud máxima
 ```
 
 La selección de los siguientes nodos utiliza costos QoS normalizados y diferentes combinaciones aleatorias de pesos.
@@ -286,29 +276,17 @@ Durante la ejecución se mantiene un archivo externo con las mejores soluciones 
 
 La actualización realiza:
 
-```text
-Nuevas soluciones
-       │
-       ▼
-Combinar con Pareto actual
-       │
-       ▼
-Eliminar rutas duplicadas
-       │
-       ▼
-Eliminar objetivos duplicados
-       │
-       ▼
-Eliminar soluciones dominadas
-       │
-       ▼
-Controlar tamaño mediante crowding
-       │
-       ▼
-Frente Pareto actualizado
+```
+1. Nuevas soluciones
+2. Combinar con Pareto actual
+3. Eliminar rutas duplicadas
+4. Eliminar objetivos duplicados
+5. Eliminar soluciones dominadas
+6. Controlar tamaño mediante crowding
+7. Frente Pareto actualizado
 ```
 
-La **distancia de crowding** permite conservar soluciones distribuidas en diferentes regiones del espacio objetivo cuando el frente crece demasiado.
+La *distancia de crowding* permite conservar soluciones distribuidas en diferentes regiones del espacio objetivo cuando el frente crece demasiado.
 
 ---
 
@@ -345,68 +323,6 @@ La semilla controla los generadores aleatorios utilizados durante la búsqueda.
 
 Esto permite repetir experimentos bajo las mismas condiciones.
 
----
-
-# Flujo general del algoritmo
-
-```text
-                Dataset QoS
-                     │
-                     ▼
-               Grafo dirigido
-                     │
-                     ▼
-          Generación de población
-            inicial de rutas
-                     │
-                     ▼
-              Evaluación QoS
-                     │
-                     ▼
-          Frente Pareto inicial
-                     │
-                     ▼
-        ┌─────────────────────────┐
-        │      Iteraciones ABC    │
-        │                         │
-        │  Abejas obreras         │
-        │          ↓              │
-        │  Generación de vecinos  │
-        │          ↓              │
-        │  Abejas espectadoras    │
-        │          ↓              │
-        │  Selección Pareto       │
-        │          ↓              │
-        │  Abejas exploradoras    │
-        │          ↓              │
-        │  Control de estancamiento│
-        └────────────┬────────────┘
-                     │
-                     ▼
-          Actualización del Pareto
-                     │
-                     ▼
-             Frente Pareto final
-```
-
----
-
-# Historial de ejecución
-
-Durante cada iteración se registran indicadores que permiten analizar el comportamiento del algoritmo, entre ellos:
-
-| Indicador | Descripción |
-|---|---|
-| Tamaño Pareto | Número de soluciones no dominadas |
-| Población única | Número de rutas diferentes |
-| Diversidad de rutas | Diferencia estructural entre soluciones |
-| Mejor latencia | Menor latencia encontrada |
-| Mejor pérdida | Menor pérdida encontrada |
-| Mejor jitter | Menor jitter encontrado |
-| Mejor ancho de banda | Mayor ancho de banda encontrado |
-| Intentos sin mejora | Nivel de estancamiento de la población |
-
-Esto permite analizar no solamente los mejores valores encontrados, sino también la evolución de la diversidad y del frente de Pareto.
 
 ---
 
@@ -457,24 +373,3 @@ El resultado final corresponde a un conjunto de rutas no dominadas que represent
 | Historial basado en un valor agregado | Seguimiento individual de métricas y diversidad |
 
 ---
-
-## Tecnologías utilizadas
-
-- Python
-- NetworkX
-- NumPy
-- Pandas
-- Matplotlib
-- Artificial Bee Colony
-- Optimización multiobjetivo
-- Dominancia de Pareto
-
----
-
-<div align="center">
-
-### ABC Multiobjetivo para optimización de rutas QoS
-
-La solución busca mantener un equilibrio entre **calidad**, **diversidad** y **exploración del espacio de rutas**.
-
-</div>

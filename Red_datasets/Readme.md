@@ -1,6 +1,6 @@
 # Datasets de la Red QoS
 
-### Conjuntos de datos para optimización multiobjetivo de Calidad de Servicio
+
 
 <p>
 Esta carpeta contiene los datasets utilizados durante el desarrollo,
@@ -24,11 +24,6 @@ Red_datasets/
 │
 └── Readme.md
 ```
-
-La separación entre `Original/` y `Mejorada/` permite conservar la implementación inicial del proyecto y, al mismo tiempo, identificar claramente los cambios introducidos posteriormente.
-
-Esto facilita la **reproducibilidad de los experimentos** y la **comparación entre ambas metodologías**.
-
 ---
 
 ##  Versión Original
@@ -151,10 +146,3 @@ Como consecuencia, la transformación no funciona únicamente como un cambio de 
 
 También puede modificar indirectamente la forma en que se comparan rutas con diferente cantidad de saltos.
 
-Por esta razón, en la versión mejorada se adopta el siguiente enfoque:
-
-1. Utilizar métricas reales de cada enlace
-2. Calcular las métricas completas de la ruta 
-3. Realizar posteriormente la comparación necesaria
-
----

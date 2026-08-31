@@ -9,8 +9,8 @@ sys.path.insert(0, str(BASE_DIR))
 
 from Algoritmo.Mejorada.AlgoritmoABC import ABCMultiobjetivo
 
-DATASET = BASE_DIR / "Red_datasets" / "Mejorada" / "DatasetRed.csv"
-OUTPUT_DIR = BASE_DIR / "Resultados" / "Mejorada" / "04_Reproducibilidad"
+DATASET = BASE_DIR/"Red_datasets"/"Mejorada"/"DatasetRed.csv"
+OUTPUT_DIR = BASE_DIR/"Resultados"/"Mejorada"/"04_Reproducibilidad"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 ORIGEN, DESTINO = 52, 96
@@ -113,11 +113,6 @@ def main():
     print(f"Frente Pareto idéntico:   {'SI' if mismo_pareto else 'NO'}")
     print(f"Historial idéntico:       {'SI' if mismo_historial else 'NO'}")
     print(f"Población final idéntica: {'SI' if misma_poblacion else 'NO'}")
-
-    if resultado.loc[0, "Reproducible"]:
-        print("\nRESULTADO: EJECUCIÓN REPRODUCIBLE.")
-    else:
-        print("\nRESULTADO: SE ENCONTRARON DIFERENCIAS.")
 
 if __name__ == "__main__":
     main()

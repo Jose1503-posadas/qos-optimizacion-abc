@@ -3,20 +3,16 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import pandas as pd
 
-
 BASE_DIR = Path(__file__).resolve().parents[2]
 RESULTADOS = BASE_DIR / "Resultados" / "Mejorada" / "03_MultiplesSemillas"
 ARCHIVO = RESULTADOS / "ResumenCorridas.csv"
-
 OUTPUT_DIR = RESULTADOS / "Visualizaciones"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-
 
 def guardar(nombre):
     plt.tight_layout()
     plt.savefig(OUTPUT_DIR / nombre, dpi=300, bbox_inches="tight")
     plt.close()
-
 
 def grafica_exito(df):
     tasas = [
@@ -36,7 +32,6 @@ def grafica_exito(df):
         plt.text(i, valor + 1, f"{valor:.2f}%", ha="center")
 
     guardar("01_ExitoPorObjetivo.png")
-
 
 def grafica_pareto(df):
     plt.figure(figsize=(9, 5))
@@ -74,13 +69,6 @@ def main():
     grafica_exito(df)
     grafica_pareto(df)
     grafica_gap_bw(df)
-
-    print("=" * 65)
-    print("VISUALIZACIÓN DE LAS 30 SEMILLAS")
-    print("=" * 65)
-    print("Gráficas generadas: 3")
-    print(f"Ubicación:\n{OUTPUT_DIR}")
-
 
 if __name__ == "__main__":
     main()

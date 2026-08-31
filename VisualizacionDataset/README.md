@@ -122,17 +122,6 @@ La primera versión era útil para comprobar que el grafo existía, pero proporc
 
 El principal problema puede observarse en la zona central de la gráfica. Al mostrar simultáneamente todos los nodos y sus enlaes con sus respectivas etiquetas, se produce una gran cantidad de elementos superpuestos.
 
-Además:
-
-```text
-Nodo con 5 conexiones  → mismo vizualización
-Nodo con 46 conexiones → mismo vizualización
-```
-
-Por lo tanto, no era posible identificar fácilmente cuáles nodos tenían mayor importancia estructural.
-
----
-
 # 3. Segunda versión: visualización mejorada
 
 Para solucionar estas limitaciones se desarrolló una nueva versión.
@@ -177,7 +166,7 @@ Con esto se seleccionan los:
 ```text
 10 nodos con mayor grado
 ```
-Estos nodos son considerados **hubs topológicos** debido a que concentran una cantidad elevada de conexiones.
+Estos nodos son considerados **hubs** debido a que concentran una cantidad elevada de conexiones.
 
 ---
 
@@ -255,9 +244,9 @@ Los principales hubs también aparecen identificados mediante sus etiquetas.
 
 ---
 
-# 8. Nueva visualizacion - Distribución de la conectividad
+# 8. Distribución de la conectividad
 
-Además de mejorar la topología visual, se desarrolló una segunda herramienta dedicada específicamente a estudiar cómo se distribuyen las conexiones entre los nodos.
+Además de mejorar la topología visual, se desarrolló una nueva imagen dedicada mostrar cómo se distribuyen las conexiones entre los nodos.
 
 El análisis comienza nuevamente con:
 
@@ -291,7 +280,7 @@ estadisticas = {
 Para determinar cuántos nodos presentan cada número de conexiones se utiliza:
 
 ```python
-valores, frecuencias = np.unique(grados,return_counts=True)
+valores, frecuencias = np.unique(grados return_counts=True)
 ```
 
 Por ejemplo:
@@ -324,28 +313,11 @@ Posteriormente se genera un gráfico de barras.
   <em>Figura 3. Distribución del grado de los nodos de la red.</em>
 </p>
 
----
-
-# 10. Interpretación de la distribución
 
 La gráfica muestra que la conectividad no se encuentra distribuida uniformemente, la mayor parte de los nodos tiene relativamente pocas conexiones.
 
 Sin embargo, existe un pequeño grupo de nodos con una conectividad considerablemente superior.
 
-La diferencia entre ambos valores muestra la presencia de nodos altamente conectados.
-
-Esto coincide con lo observado directamente en la representación de la topología.
-
----
-
-# 11. Conclusión
-
-La primera versión cumplía correctamente con su objetivo inicial:
-
-> comprobar que el dataset podía representarse como una red dirigida.
-
-Sin embargo, conforme avanzó el proyecto fue necesario obtener más información acerca de la estructura sobre la cual trabaja el algoritmo.
-
-Esto proporciona una caracterización más completa de la red y establece una base experimental más sólida para posteriormente comparar el comportamiento de las diferentes versiones del algoritmo ABC.
+La diferencia entre ambos valores muestra la presencia de nodos altamente conectados. Esto coincide con lo observado directamente en la representación de la topología.
 
 ---

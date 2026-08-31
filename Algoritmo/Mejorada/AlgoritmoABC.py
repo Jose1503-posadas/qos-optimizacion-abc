@@ -434,10 +434,7 @@ class ABCMultiobjetivo:
         }
 
         for ruta, fit in candidatos:
-            por_ruta[tuple(ruta)] = (
-                list(ruta),
-                tuple(float(x) for x in fit)
-            )
+            por_ruta[tuple(ruta)] = (list(ruta), tuple(float(x) for x in fit))
 
         soluciones = list(por_ruta.values())
 

@@ -197,10 +197,6 @@ def main():
     df.to_csv(ARCHIVO_CORRIDAS, index=False)
     resumen.to_csv(ARCHIVO_RESUMEN, index=False)
 
-    print("\n" + "=" * 70)
-    print("RESUMEN DEL EXPERIMENTO")
-    print("=" * 70)
-
     columnas = ["Iteraciones","TiempoPromedio","ParetoPromedio","DiversidadPromedio","ExitoLatencia","ExitoPerdida","ExitoJitter","ExitoAnchoBanda","ExitoCompleto"]
     print(resumen[columnas].round(4).to_string(index=False))
 

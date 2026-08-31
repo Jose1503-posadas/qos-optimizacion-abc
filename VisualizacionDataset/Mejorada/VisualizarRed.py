@@ -7,13 +7,9 @@ import pandas as pd
 
 from pathlib import Path
 
-# ubicación del archivo visualizarRed.py
 SCRIPT_DIR = Path(__file__).resolve().parent
-#raíz del proyecto:
 BASE_DIR = SCRIPT_DIR.parent.parent
-# Dataset
 CSV_PATH = BASE_DIR / "Red_datasets" / "Mejorada" / "DatasetRed.csv"
-# Carpeta donde se guardaran las visualizaciones
 OUTPUT_DIR = BASE_DIR / "VisualizacionDataset" / "Mejorada"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -60,18 +56,12 @@ def visualizar_red(G, filename="Red_dataset.png"):
 
     # Nodos
     nodos = nx.draw_networkx_nodes(G,pos,ax=ax,node_size=node_sizes,node_color=node_colors,cmap=plt.cm.viridis,alpha=0.92,linewidths=0.7,edgecolors="white",)
-
-    # Etiquetas de los 10 hubs principales
     etiquetas = {nodo: str(nodo) for nodo, _ in hubs }
-
     nx.draw_networkx_labels(G,pos,labels=etiquetas,ax=ax,font_size=10,font_weight="bold",bbox={"facecolor": "white","edgecolor": "none","alpha": 0.8,"pad": 1.5,},)
-
-    # Barra de color
     cbar = fig.colorbar(nodos,ax=ax,shrink=0.7,pad=0.01,)
 
     cbar.set_label("Número de conexiones del nodo", fontsize=11,)
 
-    # Información general
     informacion = (
         f"Nodos: {G.number_of_nodes()}\n"
         f"Enlaces dirigidos: {G.number_of_edges()}\n"
@@ -81,13 +71,11 @@ def visualizar_red(G, filename="Red_dataset.png"):
 
     ax.text(0.015,0.015,informacion,transform=ax.transAxes,fontsize=10,verticalalignment="bottom",bbox={"boxstyle": "round,pad=0.6","facecolor": "white","edgecolor": "lightgray","alpha": 0.9,},)
 
-    # Título
     ax.set_title(("Topología de la red QoS"),fontsize=18,fontweight="bold",pad=20,)
 
     ax.axis("off")
     plt.tight_layout()
 
-    # Guardar
     output = OUTPUT_DIR /filename
     plt.savefig(output,dpi=300,bbox_inches="tight", facecolor="white",)
     plt.show()

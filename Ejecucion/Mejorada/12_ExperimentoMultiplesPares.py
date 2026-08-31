@@ -155,7 +155,7 @@ def seleccionar_pares(G, num_pares=NUM_PARES, seed=SEED_SELECCION_PARES):
             break
 
     if len(seleccionados) < num_pares:
-        print(f"\nADVERTENCIA: sólo se encontraron {len(seleccionados)} pares adecuados.\n")
+        print(f"\n sólo se encontraron {len(seleccionados)} pares adecuados.\n")
 
     # Agregar información topológica
     for i, par in enumerate(seleccionados, 1):
@@ -213,7 +213,6 @@ def quitar_ciclos(ruta):
 
 
 def _optimo_dp(G, origen, destino, inicial, defecto, combinar, mejor, elegir, alcanzable):
-    """Programación dinámica común para los diferentes objetivos"""
 
     nodos = list(G.nodes)
     dp = [{nodo: defecto for nodo in nodos} for _ in range(MAX_ENLACES + 1)]
@@ -324,14 +323,10 @@ def ruta_valida(G, ruta, origen, destino):
 
 
 def diversidad_rutas(rutas):
-    """Calcula diversidad mediante distancia de Jaccard."""
 
     enlaces = [set(zip(ruta[:-1], ruta[1:])) for ruta in rutas]
 
-    distancias = [
-        1.0 - len(a & b) / len(a | b) if a | b else 0.0
-        for a, b in combinations(enlaces, 2)
-    ]
+    distancias = [1.0 - len(a & b) / len(a | b) if a | b else 0.0 for a, b in combinations(enlaces, 2)]
 
     return float(np.mean(distancias)) if distancias else 0.0
 
@@ -340,24 +335,21 @@ def gap(valor, optimo, minimizar=True):
     if math.isclose(optimo, 0.0, abs_tol=1e-15):
         return (0.0 if math.isclose(valor,optimo,rel_tol=TOLERANCIA, abs_tol=TOLERANCIA) else math.inf)
 
-    resultado = ((valor - optimo) / optimo * 100 if minimizar else (optimo - valor) / optimo * 100)
+    resultado = ((valor - optimo)/optimo * 100 if minimizar else (optimo - valor) / optimo * 100)
 
     return max(0.0, resultado)
 
 
 def construir_dataframe_frente(G, frente, origen, destino):
-
     filas, vistas = [], set()
 
     for i, (ruta, _) in enumerate(frente, 1):
 
         clave = tuple(ruta)
-
         if clave in vistas or not ruta_valida(G, ruta, origen, destino):
             continue
 
         vistas.add(clave)
-
         latencia, perdida, jitter, bw = evaluar_ruta(G, ruta)
 
         filas.append({
@@ -471,10 +463,6 @@ def calcular_optimos_pares(G, df_pares):
 
     filas = []
 
-    print("\n" + "=" * 75)
-    print("CÁLCULO DE ÓPTIMOS EXACTOS")
-    print("=" * 75)
-
     for _, par in df_pares.iterrows():
 
         par_id = par["Par"]
@@ -582,10 +570,6 @@ def generar_resumen_por_par(df_corridas, df_pares, df_optimos):
 
 
 def mostrar_resumen(df_resumen):
-
-    print("\n" + "=" * 90)
-    print("Evaluacion de los multiples pares")
-
     campos = [
         ("Pareto promedio", "ParetoPromedio", ".2f", ""),
         ("Tiempo promedio", "TiempoPromedio", ".2f", " s"),
@@ -614,12 +598,6 @@ def mostrar_resumen(df_resumen):
 
     if validos.empty:
         return
-
-    print("\n" + "-" * 90)
-    print("RESULTADO GLOBAL")
-    print("-" * 90)
-
-    print(f"Pares evaluados:                {len(validos)}")
 
     globales = [
         ("Éxito completo promedio", "ExitoCompletoPct", "%"),
@@ -667,19 +645,10 @@ def main():
     # Cargar red
     G = cargar_grafo(DATASET)
 
-    print(
-        f"\nRed cargada: "
-        f"{G.number_of_nodes()} nodos | "
-        f"{G.number_of_edges()} enlaces"
-    )
+    print(f"\nRed cargada: " f"{G.number_of_nodes()} nodos | " f"{G.number_of_edges()} enlaces")
 
     # Seleccionar pares
     df_pares = obtener_pares(G)
-
-    print("\n" + "=" * 90)
-    print("PARES SELECCIONADOS")
-    print("=" * 90)
-    print(df_pares.to_string(index=False))
 
     # Calcular óptimos
     df_optimos = calcular_optimos_pares(G, df_pares)

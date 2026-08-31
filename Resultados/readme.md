@@ -1,8 +1,6 @@
 # Resultados
 
-Esta carpeta contiene los resultados obtenidos durante la evaluación de la versión mejorada del algoritmo **Artificial Bee Colony (ABC) Multiobjetivo** aplicado al problema de optimización de rutas con métricas de Calidad de Servicio (QoS).
-
-Los scripts utilizados para generar estos resultados se encuentran documentados en:
+Los scripts utilizados para generar estos resultados se encuentran en:
 
 ```text
 Ejecucion/README.md
@@ -39,8 +37,6 @@ Antes de realizar experimentos con múltiples iteraciones y semillas, se verific
 
 Se analizaron 30 soluciones pertenecientes al frente de Pareto.
 
-### Resultados
-
 | Verificación | Resultado |
 |---|---:|
 | Rutas válidas | 30 / 30 |
@@ -54,12 +50,10 @@ Los valores fueron recalculados independientemente a partir de los enlaces que f
 
 Esto permitió comprobar que:
 
-```text
-✓ Las rutas respetan la topología de la red.
-✓ Las rutas inician y terminan en los nodos correspondientes.
-✓ No existen enlaces inexistentes dentro de las rutas.
-✓ Las métricas QoS almacenadas coinciden con el cálculo independiente.
-```
+- Las rutas respetan la topología de la red.
+- Las rutas inician y terminan en los nodos correspondientes.
+- No existen enlaces inexistentes dentro de las rutas.
+- Las métricas QoS almacenadas coinciden con el cálculo independiente.
 
 ---
 
@@ -76,13 +70,7 @@ Posteriormente se verificó que el frente generado realmente estuviera compuesto
 | Rutas duplicadas | 0 |
 | Objetivos duplicados | 0 |
 
-Por lo tanto:
-
-```text
-RESULTADO: FRENTE PARETO VÁLIDO
-```
-
-Esto confirma que ninguna de las soluciones almacenadas era superada simultáneamente en todos los objetivos por otra solución del mismo frente.
+Por lo tanto, el frente de pareto es valido, ya que confirma que ninguna de las soluciones almacenadas fuera superada simultáneamente en todos los objetivos por otra solución del mismo frente.
 
 ---
 
@@ -117,17 +105,10 @@ Por lo tanto, en esta ejecución el algoritmo logró alcanzar los cuatro valores
 Para determinar una cantidad adecuada de iteraciones se probaron:
 
 ```text
-25
-50
-100
-150
-250
-400
+25, 50, 100, 150, 250, 400
 ```
 
 Cada configuración fue ejecutada utilizando 10 semillas diferentes.
-
-### Resumen
 
 | Iteraciones | Tiempo promedio (s) | Pareto promedio | Diversidad promedio | Éxito completo |
 |---:|---:|---:|---:|---:|
@@ -205,13 +186,7 @@ El tamaño promedio del frente aumenta con el número de iteraciones:
 
 Esto indica que una mayor cantidad de iteraciones permite descubrir nuevas alternativas no dominadas.
 
-Sin embargo, entre 250 y 400 iteraciones el incremento fue únicamente de aproximadamente:
-
-```text
-2.4 soluciones Pareto adicionales
-```
-
-mientras que el costo computacional aumentó considerablemente.
+Sin embargo, entre 250 y 400 iteraciones el incremento fue mayormente el incremento de tiempo que solamente aumentó el costo computacional considerablemente.
 
 ---
 
@@ -245,13 +220,13 @@ Esto indica que el incremento de iteraciones no provocó una pérdida significat
 
 La gráfica permite observar que no todos los objetivos presentan la misma dificultad.
 
-La latencia y la pérdida fueron alcanzadas con alta frecuencia incluso utilizando configuraciones pequeñas.
+- La latencia y la pérdida fueron alcanzadas con alta frecuencia incluso utilizando configuraciones pequeñas.
 
-El jitter también mostró una rápida convergencia.
+- El jitter también mostró una rápida convergencia.
 
-El **ancho de banda** fue el objetivo que requirió una mayor cantidad de iteraciones para alcanzar consistentemente su óptimo.
+- El **ancho de banda** fue el objetivo que requirió una mayor cantidad de iteraciones para alcanzar consistentemente su óptimo.
 
-Esto sugiere que encontrar la ruta con el mejor cuello de botella requiere una mayor exploración del espacio de búsqueda.
+- Esto sugiere que encontrar la ruta con el mejor cuello de botella requiere una mayor exploración del espacio de búsqueda.
 
 ---
 
@@ -291,8 +266,6 @@ Seeds = 1 ... 30
 
 El objetivo fue analizar la estabilidad del algoritmo frente a diferentes secuencias aleatorias.
 
-### Resumen
-
 | Indicador | Resultado |
 |---|---:|
 | Corridas | 30 |
@@ -321,9 +294,7 @@ Los resultados muestran:
 Los óptimos de:
 
 ```text
-Latencia
-Pérdida
-Jitter
+Latencia, pérdida y Jitter
 ```
 
 fueron encontrados en las 30 ejecuciones.
@@ -439,12 +410,6 @@ Historial idéntico:       SI
 Población final idéntica: SI
 ```
 
-Por lo tanto:
-
-```text
-RESULTADO: EJECUCIÓN REPRODUCIBLE
-```
-
 Esto confirma que una misma semilla permite reproducir nuevamente el comportamiento de la ejecución.
 
 ---
@@ -463,24 +428,6 @@ El objetivo fue determinar cuántas soluciones diferentes fueron descubiertas y 
 | Soluciones únicas | 44 |
 | Frente de referencia | 40 |
 | Dominadas eliminadas | 4 |
-
-El proceso puede resumirse como:
-
-```text
-30 frentes Pareto
-       │
-       ▼
-1005 apariciones
-       │
-       ▼
-44 soluciones únicas
-       │
-       ▼
-Eliminar dominadas
-       │
-       ▼
-40 soluciones no dominadas
-```
 
 Un resultado particularmente importante es la reducción de:
 
@@ -503,13 +450,6 @@ De las 44 soluciones diferentes:
 ```
 
 permanecieron globalmente no dominadas.
-
-Estas soluciones forman el:
-
-**Frente de Pareto de referencia empírico.**
-
-> Se utiliza el término "empírico" porque el conjunto se construye a partir de las soluciones encontradas durante las 30 ejecuciones y no mediante una enumeración exacta de todo el espacio de búsqueda.
-
 ---
 
 # 9. Comparación ilustrativa Original vs Mejorada
@@ -729,72 +669,12 @@ El ancho de banda fue el objetivo que presentó una mayor dificultad, especialme
 
 Esto muestra que la capacidad del algoritmo para encontrar la ruta con el mayor ancho de banda disponible puede depender en mayor medida de las características del par origen-destino.
 
-## 10.3 Archivos generados
-
-Los resultados del experimento se almacenan en:
-
-```text
-Resultados/Mejorada/05_MultiplesPares/
-```
-
-Los archivos principales son:
-
-```text
-ParesSeleccionados.csv
-OptimosPorPar.csv
-ResumenCorridas.csv
-ResumenPorPar.csv
-```
-
-Además, para cada par y cada semilla se almacenan:
-
-```text
-FrentePareto.csv
-HistorialABC.csv
-```
-
-Esto permite revisar de manera individual las soluciones encontradas en cada ejecución y conservar un registro completo del experimento.
-
----
-
 # Conclusión
 
-Los resultados obtenidos muestran que la versión mejorada del algoritmo ABC Multiobjetivo presenta un comportamiento favorable para la selección de rutas considerando diferentes métricas de Calidad de Servicio.
+En este proyecto se analizó el uso del algoritmo Artificial Bee Colony (ABC) para encontrar rutas dentro de una red de telecomunicaciones considerando al mismo tiempo cuatro métricas de Calidad de Servicio: latencia, pérdida de paquetes, jitter y ancho de banda.
 
-El experimento realizado con diferentes números de iteraciones permitió observar que aumentar la cantidad de búsqueda mejora progresivamente la probabilidad de alcanzar los óptimos individuales. A partir de estos resultados se seleccionaron **250 iteraciones**, ya que esta configuración alcanzó una tasa de éxito del 100 % en las diez semillas evaluadas, sin requerir el mayor tiempo de ejecución observado con 400 iteraciones.
+A partir de los experimentos realizados se observó que el algoritmo es capaz de generar rutas válidas y obtener diferentes soluciones no dominadas, lo que permite representar distintos compromisos entre las métricas QoS. La comparación con los óptimos exactos también ayudó a tener una referencia clara sobre qué tan buenos eran los resultados obtenidos por el algoritmo.
 
-Posteriormente, utilizando la configuración seleccionada, se realizaron 30 ejecuciones independientes sobre el par principal `52 → 96`.
+Las pruebas realizadas con diferentes semillas mostraron que el comportamiento del algoritmo se mantiene relativamente estable y que los resultados pueden reproducirse cuando se utiliza la misma configuración. Además, al evaluar distintos pares origen-destino se encontró un buen desempeño en latencia, pérdida de paquetes y jitter. En el caso del ancho de banda, se observó que encontrar el mejor valor posible puede ser más complicado en algunos escenarios.
 
-En estas pruebas se obtuvo:
-
-```text
-Éxito latencia:       100 %
-Éxito pérdida:        100 %
-Éxito jitter:         100 %
-Éxito ancho de banda: 96.67 %
-Éxito completo:       96.67 %
-```
-
-Además, los tamaños del frente de Pareto y los valores de diversidad se mantuvieron relativamente estables entre las diferentes semillas. La prueba de reproducibilidad también confirmó que una misma configuración y semilla permiten obtener nuevamente los mismos resultados.
-
-La construcción del frente de referencia empírico permitió reunir las soluciones encontradas durante las 30 ejecuciones. De 1005 apariciones se identificaron 44 rutas diferentes, de las cuales 40 permanecieron globalmente no dominadas.
-
-También se realizó una comparación ilustrativa entre la versión original y la versión mejorada. En la ejecución analizada, la versión mejorada obtuvo un mayor número de soluciones no dominadas, redujo los gaps respecto a los óptimos individuales y presentó un menor tiempo de ejecución.
-
-Finalmente, la evaluación se amplió utilizando seis pares origen-destino diferentes y un total de 60 ejecuciones.
-
-Considerando todas estas pruebas se obtuvo:
-
-```text
-Éxito latencia:       100 %
-Éxito pérdida:        98.33 %
-Éxito jitter:         100 %
-Éxito ancho de banda: 66.67 %
-Éxito completo:       65 %
-```
-
-Estos resultados muestran que el comportamiento del algoritmo no se limita únicamente al par principal `52 → 96`. La latencia, la pérdida de paquetes y el jitter mantuvieron tasas de éxito altas en los diferentes escenarios evaluados.
-
-Sin embargo, el ancho de banda presentó una mayor dificultad en algunos pares origen-destino. Esto indica que la capacidad del algoritmo para encontrar la ruta con el mayor ancho de banda disponible puede depender en mayor medida de las características del problema evaluado.
-
-En conjunto, las verificaciones y experimentos realizados proporcionan evidencia sobre la correctitud, diversidad, robustez y reproducibilidad de la versión mejorada del algoritmo. Al mismo tiempo, los resultados permiten identificar la búsqueda del máximo ancho de banda como un aspecto que todavía puede mejorarse.
+En general, los resultados obtenidos muestran que el enfoque multiobjetivo basado en ABC puede ser una opción útil para explorar diferentes rutas dentro de una red y encontrar varias alternativas de acuerdo con las necesidades de QoS. Al mismo tiempo, los experimentos permitieron identificar aspectos que todavía pueden seguir mejorándose, principalmente en la búsqueda de rutas con mayor ancho de banda y en la evaluación del algoritmo sobre redes de mayor tamaño o con condiciones diferentes.

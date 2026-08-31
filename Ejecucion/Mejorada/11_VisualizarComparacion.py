@@ -1,16 +1,12 @@
 from pathlib import Path
-
 import matplotlib.pyplot as plt
 import pandas as pd
 
-
 BASE_DIR = Path(__file__).resolve().parents[2]
-
-RESULTADOS = BASE_DIR / "Resultados" / "ComparacionOriginalMejorada"
-COMPARACION = RESULTADOS / "ComparacionMetricas.csv"
-RESUMEN = RESULTADOS / "ResumenVersiones.csv"
-
-OUTPUT_DIR = RESULTADOS / "Visualizaciones"
+RESULTADOS = BASE_DIR/"Resultados"/"ComparacionOriginalMejorada"
+COMPARACION = RESULTADOS/"ComparacionMetricas.csv"
+RESUMEN = RESULTADOS/"ResumenVersiones.csv"
+OUTPUT_DIR = RESULTADOS/"Visualizaciones"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 
@@ -25,8 +21,8 @@ def grafica_gaps(df):
     ancho = 0.35
 
     plt.figure(figsize=(9, 5))
-    plt.bar([i - ancho / 2 for i in x], df["GapOriginal"], ancho, label="Original")
-    plt.bar([i + ancho / 2 for i in x], df["GapMejorada"], ancho, label="Mejorada")
+    plt.bar([i - ancho/2 for i in x], df["GapOriginal"], ancho, label="Original")
+    plt.bar([i + ancho/2 for i in x], df["GapMejorada"], ancho, label="Mejorada")
 
     plt.xticks(list(x), df["Metrica"])
     plt.ylabel("Gap respecto al óptimo (%)")
@@ -85,13 +81,6 @@ def main():
     grafica_gaps(comparacion)
     grafica_pareto(resumen)
     grafica_tiempo(resumen)
-
-    print("=" * 60)
-    print("VISUALIZACIÓN ORIGINAL VS MEJORADA")
-    print("=" * 60)
-    print("Gráficas generadas: 3")
-    print(f"Ubicación:\n{OUTPUT_DIR}")
-
 
 if __name__ == "__main__":
     main()
