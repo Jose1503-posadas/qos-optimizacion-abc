@@ -660,7 +660,3 @@ Este repositorio forma parte del trabajo:
 **“Optimización de la Calidad de Servicio (QoS) en Redes de Telecomunicaciones mediante el Algoritmo de Colonia de Abejas Artificiales”**
 
 ---
-
-
-Departamento de Computación, Electrónica y Mecatrónica
-Universidad de las Américas Puebla
